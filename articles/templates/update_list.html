@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>propaganda</title>
+</head>
+<body>
+    <h1>Üdvözlünk a Propaganda kalkulátoron</h1>
+
+    <!-- Your introductory content here -->
+
+    <h1>Update List</h1>
+    <ul>
+        {% for update in updates %}
+        <li>
+            <strong>{{ update.title }}</strong> - {{ update.pub_date }}
+            <p>{{ update.content }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Your other content here -->
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>propaganda </title>
+    </head>
+    <body>
+
+            <h1>Üdvözlünk a Propaganda kalkulátoron</h1>
+
+            Ez az oldal azért jött részre, hogy számszerűsítsen adatokat a magyar médiáról.
+            A magyar közéletben sajnos politikai beállítottságtól függetlenül szokás az ellentétes
+            politikai oldal médiáját propagandázni. Ennek szeretnénk véget vetni és számokkal
+            bizonyítani bizonyos kérdéseket.<br>
+            Kezdetben az oldal főleg hírportálokon megjelenő címekben található kifejezések alapján
+            fog adatokat közölni, majd ahogy haladunk előrébb, tartalom elemzéseket is mutatunk majd.
+
+
+            <h1>Válassz kifejezést!</h1>
+            <form method="get" action="{% url 'get_terms_on_sites' %}">
+                {% csrf_token %}
+                <input type="checkbox" id="expression" name="expression" value="Orbán">
+                <label for="expression"> Orbán</label><br>
+                <input type="checkbox" id="experssion" name="expression" value="Gyurcsány">
+                <label for="expression"> Gyurcsány</label><br>
+                <input type="submit" value="mehet">
+            </form>
+
+            <a href="{% url 'update_database' %}?button_value=Orbán" class="btn btn-primary">Adatbázis frissítése</a>
+
+
+            <h1>Elemzések</h1>
+    <ul>
+        {% for update in updates %}
+        <li>
+            <strong>{{ update.title }}</strong> - {{ update.pub_date }}
+            <p>{{ update.content }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+
+
+    </body>
+</html>
