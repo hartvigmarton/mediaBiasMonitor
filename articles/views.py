@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import ArticleSerializer
 from .rss_scraper import gather_titles
-from .scraper import update_database
+from .entity_manager import update_database
 
 
 def print_value(request):
