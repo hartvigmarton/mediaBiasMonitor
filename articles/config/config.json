@@ -1,0 +1,25 @@
+{
+    "websites": [
+        {
+            "website_name": "Origo",
+            "website_url": "https://www.origo.hu",
+            "website_rss": "https://www.origo.hu/contentpartner/rss/origoall/origo.xml"
+        },
+        {
+            "website_name": "444",
+            "website_url": "https://444.hu",
+            "website_rss": "https://444.hu/feed"
+        },
+        {
+            "website_name": "Telex",
+            "website_url": "https://telex.hu",
+            "website_rss": "https://telex.hu/rss"
+        },
+        {
+            "website_name": "Magyar Nemzet",
+            "website_url": "https://magyarnemzet.hu/",
+            "website_rss": "none"
+        }
+    ],
+    "terms": ["Orbán", "Gyurcsány"]
+}

@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <title>propaganda </title>
     </head>
     <body>
@@ -15,7 +16,42 @@
             Kezdetben az oldal főleg hírportálokon megjelenő címekben található kifejezések alapján
             fog adatokat közölni, majd ahogy haladunk előrébb, tartalom elemzéseket is mutatunk majd.
 
+           <!-- <canvas id="articleChart" width="400" height="200"></canvas>
+            <script>
+  // Function to fetch data from the Django backend and create a chart
+  async function createChart() {
+    // Fetch the data from your Django API endpoint
+    const response = await fetch('/articles/article-list'); // Replace with your actual API endpoint
+    const data = await response.json();
 
+    // Extract the required data for the chart (e.g., labels and values)
+    const labels = data.map(article => article.title);
+    const values = data.map(article => article.pub_date);
+
+    // Get the canvas element
+    const ctx = document.getElementById('articleChart').getContext('2d');
+
+    // Create a chart using Chart.js
+    new Chart(ctx, {
+      type: 'bar', // You can change the chart type as needed
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Publication Date',
+            data: values,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)', // Change the colors as needed
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+          },
+        ],
+      },
+    });
+  }
+
+  // Call the createChart function to generate the chart
+  createChart();
+</script>-->
             <h1>Válassz kifejezést!</h1>
             <form method="get" action="{% url 'get_terms_on_sites' %}">
                 {% csrf_token %}
@@ -26,15 +62,14 @@
                 <input type="submit" value="mehet">
             </form>
 
-            <a href="{% url 'update_database' %}?button_value=Orbán" class="btn btn-primary">Adatbázis frissítése</a>
 
 
             <h1>Elemzések</h1>
     <ul>
-        {% for update in updates %}
+        {% for entry in entries %}
         <li>
-            <strong>{{ update.title }}</strong> - {{ update.pub_date }}
-            <p>{{ update.content }}</p>
+            <strong>{{ entry.title }}</strong> - {{ entry.pub_date }}
+            <p>{{ entry.content }}</p>
         </li>
         {% endfor %}
     </ul>

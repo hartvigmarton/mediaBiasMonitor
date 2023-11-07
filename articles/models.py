@@ -3,8 +3,6 @@ from django.db import models
 from django.utils import timezone
 
 
-
-
 class Article(models.Model):
     title = models.CharField(max_length=100)
     term = models.CharField(max_length=100)
@@ -24,7 +22,7 @@ class Meta:
     verbose_name_plural = "Articles"
 
 
-class Update(models.Model):
+class Blog_Post(models.Model):
     title = models.CharField(max_length=200)
     content = models.CharField(max_length=10000)
     pub_date = models.DateTimeField(auto_now_add=True)

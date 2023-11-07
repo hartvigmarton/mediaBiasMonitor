@@ -5,16 +5,15 @@
     <title>propaganda</title>
 </head>
 <body>
-    <h1>Üdvözlünk a Propaganda kalkulátoron</h1>
 
     <!-- Your introductory content here -->
 
-    <h1>Update List</h1>
+    <h1>Saját írások</h1>
     <ul>
-        {% for update in updates %}
+        {% for entry in entries %}
         <li>
-            <strong>{{ update.title }}</strong> - {{ update.pub_date }}
-            <p>{{ update.content }}</p>
+            <strong>{{ entry.title }}</strong> - {{ entry.pub_date }}
+            <p>{{ entry.content }}</p>
         </li>
         {% endfor %}
     </ul>
