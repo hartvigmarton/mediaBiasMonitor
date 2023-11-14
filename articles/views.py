@@ -6,7 +6,7 @@ import time
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import ArticleSerializer
-from .rss_scraper import gather_titles
+from .rss_scraper import gather_data
 from .entity_manager import update_database
 
 
@@ -19,7 +19,7 @@ def print_value(request):
 
 
 def rss_test(request):
-    titles = gather_titles()
+    titles = gather_data()
     return render(request,'rss_titles.html', {'titles': titles})
 
 def get_terms_on_sites(request):

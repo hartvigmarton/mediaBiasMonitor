@@ -1,3 +1,2 @@
--add rss feed reading for websites with rss
 -change function names and variable names
 -add css
