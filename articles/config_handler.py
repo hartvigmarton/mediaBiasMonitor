@@ -11,6 +11,7 @@ def load_config():
     except FileNotFoundError:
         raise Exception("Config file not found")
 
+
 def read_config_data(websites):
     website_names = []
     url_dict = {}

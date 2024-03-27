@@ -1,2 +1,3 @@
 -change function names and variable names
 -add css
+-get pubdate for articles

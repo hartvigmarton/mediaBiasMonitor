@@ -15,8 +15,8 @@ def gather_data(website_name,rss):
     for entry in entries:
         title = entry.title.text
         link = entry.link.text
-        pair = (title,link)
-        data_list.append(pair)
+        pair = (title, link)
+        data_list.append(pair) #make it list with title,link,date
      #   print(f"Title :{title}\n\nLink: {link}\n\n")
     data[website_name] = data_list
     return data

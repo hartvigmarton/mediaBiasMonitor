@@ -7,6 +7,7 @@ class Article(models.Model):
     title = models.CharField(max_length=100)
     term = models.CharField(max_length=100)
     website = models.CharField(max_length=100)
+    link = models.CharField(max_length=150)
     pub_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

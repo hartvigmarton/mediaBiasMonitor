@@ -20,52 +20,34 @@
             Kezdetben az oldal főleg hírportálokon megjelenő címekben található kifejezések alapján
             fog adatokat közölni, majd ahogy haladunk előrébb, tartalom elemzéseket is mutatunk majd.
 
-           <!-- <canvas id="articleChart" width="400" height="200"></canvas>
-            <script>
-  // Function to fetch data from the Django backend and create a chart
-  async function createChart() {
-    // Fetch the data from your Django API endpoint
-    const response = await fetch('/articles/article-list'); // Replace with your actual API endpoint
-    const data = await response.json();
-
-    // Extract the required data for the chart (e.g., labels and values)
-    const labels = data.map(article => article.title);
-    const values = data.map(article => article.pub_date);
-
-    // Get the canvas element
-    const ctx = document.getElementById('articleChart').getContext('2d');
-
-    // Create a chart using Chart.js
-    new Chart(ctx, {
-      type: 'bar', // You can change the chart type as needed
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            label: 'Publication Date',
-            data: values,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)', // Change the colors as needed
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-          },
-        ],
-      },
-    });
-  }
-
-  // Call the createChart function to generate the chart
-  createChart();
-</script>-->
-            <h1>Válassz kifejezést!</h1>
-            <form method="get" action="{% url 'get_terms_on_sites' %}">
+            <h1>Gráf a kifejezést tartalmazó cikkek számáról. Válassz kifejezést!</h1>
+            <form method="get" action="{% url 'graph_view' %}">
                 {% csrf_token %}
-                <input type="checkbox" id="expression" name="expression" value="Orbán">
-                <label for="expression"> Orbán</label><br>
-                <input type="checkbox" id="experssion" name="expression" value="Gyurcsány">
-                <label for="expression"> Gyurcsány</label><br>
+                <ul>
+                    {% for term in terms %}
+                    <li>
+                        <input type="radio" id="expression" name="expression" value="{{term}}">
+                        <label for="expression"> {{term}}</label><br>
+                    </li>
+                    {% endfor %}
+                </ul>
                 <input type="submit" value="mehet">
             </form>
 
+
+            <h1>Lista a kifejezést tartalmazó címekről</h1>
+            <form method="get" action="{% url 'view_titles' %}">
+                {% csrf_token %}
+                <ul>
+                    {% for term in terms %}
+                    <li>
+                        <input type="radio" id="expression" name="expression" value="{{term}}">
+                        <label for="expression"> {{term}}</label><br>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <input type="submit" value="mehet">
+            </form>
 
 
             <h1>Elemzések</h1>

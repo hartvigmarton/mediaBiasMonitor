@@ -19,7 +19,27 @@
             "website_name": "Magyar Nemzet",
             "website_url": "https://magyarnemzet.hu/",
             "website_rss": "none"
+        },
+        {
+            "website_name": "Magyar Hang",
+            "website_url": "https://hang.hu/",
+            "website_rss": "https://hang.hu/rss/"
+        },
+        {
+            "website_name": "PestiSrácok",
+            "website_url": "https://pestisracok.hu/",
+            "website_rss": "https://pestisracok.hu/feed/"
+        },
+        {
+            "website_name": "Ripost",
+            "website_url": "https://ripost.hu/",
+            "website_rss": "none"
+        },
+        {
+            "website_name": "Index",
+            "website_url": "https://index.hu/",
+            "website_rss": "https://index.hu/24ora/rss/"
         }
     ],
-    "terms": ["Orbán", "Gyurcsány"]
+    "terms": ["Magyar Péter", "Varga Judit","lufi","maffiaállam"]
 }

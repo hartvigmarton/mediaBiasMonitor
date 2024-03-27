@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Articles</title>
+</head>
+<body>
+    <h1>Címek listája</h1>
+
+    <ul>
+        {% for title in titles %}
+            <li>
+                <strong>Website:</strong> {{ title.website }}<br>
+                <strong>Term:</strong> {{ title.term }}<br>
+                <strong>Title:</strong> {{ title.title }}<br>
+                <strong>Link:</strong> {{ title.link }}<br>
+                <strong>Publication Date:</strong> {{ title.pub_date }}
+            </li>
+        {% endfor %}
+    </ul>
+        <p>Total number of articles: {{ titles|length }}</p>
+
+
+</body>
+</html>

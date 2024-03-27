@@ -8,6 +8,9 @@ from rest_framework.views import APIView
 from .serializers import ArticleSerializer
 from .rss_scraper import gather_data
 from .entity_manager import update_database
+import matplotlib.pyplot as plt
+import os
+from .config_handler import load_config
 
 
 def print_value(request):
@@ -18,29 +21,12 @@ def print_value(request):
     return HttpResponse(submitted_value)
 
 
-def rss_test(request):
-    titles = gather_data()
-    return render(request,'rss_titles.html', {'titles': titles})
-
-def get_terms_on_sites(request):
-    if request.method == 'GET':
-        submitted_values = request.GET.getlist('expression')  # Get a list of submitted expressions
-
-
-        articles = Article.objects.filter(term__in=submitted_values)  # Retrieve articles with terms in the submitted list
-
-        return render(request, 'articles.html', {'articles': articles})
-
-    return HttpResponse("Form submitted successfully")
-
-
-def view_articles(request):
+def view_titles(request):
     if request.method == 'GET':
         submitted_value = request.GET.get('expression', '')
-        articles = Article.objects.filter(term=submitted_value)  # Retrieve all articles from the database
-        return render(request, 'articles.html', {'articles': articles})
+        titles = Article.objects.filter(term=submitted_value) # Retrieve all articles from the database
+        return render(request, 'titles.html', {'titles': titles})
     return HttpResponse("Form submitted successfully")
-
 
 def periodic_task():
     while True:
@@ -62,8 +48,74 @@ def list_entries(request):
 
 def index(request):
     entries = Blog_Post.objects.all()
-    return render(request, 'index.html',{'entries': entries})
+    websites,terms = load_config()
 
+    return render(request, 'index.html', {'entries': entries, 'terms': terms})
+
+
+def graph_view(request):
+    if request.method == 'GET':
+        submitted_values = request.GET.getlist('expression')  # Get a list of submitted expressions
+
+        if len(submitted_values) > 1:
+            # Create a list to store data for each submitted value
+            data_by_value = []
+
+            for value in submitted_values:
+                print(value)
+                articles = Article.objects.filter(term__in=[value])
+                x_values = [article.website for article in articles]
+                y_values = [len(article.title) for article in articles]
+                data_by_value.append((x_values, y_values, value))
+
+            # Plot a grouped bar chart
+            fig, ax = plt.subplots()
+            width = 0.35  # Width of the bars
+            offset = 0  # Initial offset for positioning bars
+
+            for x_values, y_values, label in data_by_value:
+                bars = ax.bar([i + offset for i in range(len(x_values))], y_values, width, label=label)
+                offset += width
+
+                # Optionally, add labels to each bar
+                for bar, x_value in zip(bars, x_values):
+                    height = bar.get_height()
+                    ax.annotate('{}'.format(height),
+                                xy=(bar.get_x() + bar.get_width() / 2, height),
+                                xytext=(0, 3),  # 3 points vertical offset
+                                textcoords="offset points",
+                                ha='center', va='bottom')
+
+            ax.set_xlabel('Website')
+            ax.set_ylabel('Nr Articles')
+            ax.set_title('Nr terms on websites')
+            ax.set_xticks([i + (width * (len(submitted_values) - 1) / 2) for i in range(len(x_values))])
+            ax.set_xticklabels(x_values, rotation=45, ha='right')  # Rotate x-axis labels for better readability
+            ax.legend()
+
+        else:
+            articles = Article.objects.filter(term__in=submitted_values)
+            x_values = [article.website for article in articles]
+            y_values = [len(article.title) for article in articles]
+
+            # Plot a bar chart
+            plt.bar(x_values, y_values)
+            plt.xlabel('Website')
+            plt.ylabel('Nr Articles')
+            plt.title('Articles by Website for Submitted Values')
+            plt.xticks(rotation=45, ha='right')  # Rotate x-axis labels for better readability
+
+    # Modify filename generation
+    cleaned_values = [value.replace(' ', '_').replace('á', 'a').replace('ö', 'o').replace('ú', 'u') for value in submitted_values]
+    filename = "_".join(cleaned_values) + ".png"
+
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    static_folder = os.path.join(BASE_DIR, 'static')
+    graph_path = os.path.join(static_folder, 'graphs', filename)
+    plt.savefig(graph_path)
+    plt.close()
+
+    return render(request, 'graph.html', {'graph_path': 'graphs/' + filename})
 
 class ArticleList(APIView):
     def get(self, request):
