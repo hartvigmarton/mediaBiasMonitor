@@ -43,9 +43,3 @@ def update_database():
                         article = Article(title=pair[0], term=term, website=website_name, link=pair[1])
                         article.save()
             logging.info("Adatbázis frissítve" + str(datetime.now()))
-
-    def periodic_task():
-        while True:
-            update_database()  # Call your function
-            time.sleep(900)  # Sleep for 5 minutes (300 seconds)
-

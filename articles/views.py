@@ -8,6 +8,8 @@ from rest_framework.views import APIView
 from .serializers import ArticleSerializer
 from .rss_scraper import gather_data
 from .entity_manager import update_database
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import os
 from .config_handler import load_config
@@ -31,7 +33,7 @@ def view_titles(request):
 def periodic_task():
     while True:
         update_database()  # Call your function
-        time.sleep(900)  # Sleep for 5 minutes (300 seconds)
+        time.sleep(3600)  # Sleep for 5 minutes (300 seconds)
 
 
 def start_periodic_task(request):
@@ -61,12 +63,18 @@ def graph_view(request):
             # Create a list to store data for each submitted value
             data_by_value = []
 
+            all_article_counts = []  # List to store all article counts for finding the absolute maximum
+
             for value in submitted_values:
-                print(value)
                 articles = Article.objects.filter(term__in=[value])
-                x_values = [article.website for article in articles]
-                y_values = [len(article.title) for article in articles]
-                data_by_value.append((x_values, y_values, value))
+                websites = set([article.website for article in articles])
+
+                # Count the number of articles for each website
+                article_counts = [articles.filter(website=website).count() for website in websites]
+
+                all_article_counts.extend(article_counts)  # Add article counts to the list
+
+                data_by_value.append((list(websites), article_counts, value))
 
             # Plot a grouped bar chart
             fig, ax = plt.subplots()
@@ -86,24 +94,37 @@ def graph_view(request):
                                 textcoords="offset points",
                                 ha='center', va='bottom')
 
-            ax.set_xlabel('Website')
-            ax.set_ylabel('Nr Articles')
-            ax.set_title('Nr terms on websites')
+            ax.set_xlabel('Híroldal')
+            ax.set_ylabel('Hírek száma')
+            ax.set_title('Kifejezést tartalmazó címek száma híroldalanként')
             ax.set_xticks([i + (width * (len(submitted_values) - 1) / 2) for i in range(len(x_values))])
-            ax.set_xticklabels(x_values, rotation=45, ha='right')  # Rotate x-axis labels for better readability
+            ax.set_xticklabels(x_values, rotation=15, ha='right')  # Rotate x-axis labels for better readability
+
+            # Set y-axis limit to the absolute maximum value
+            ax.set_ylim(0, max(all_article_counts) + 1)  # Add 1 to ensure the maximum value is fully visible
+
+            # Set y-axis tick labels as integers
+            plt.yticks(range(max(all_article_counts) + 1))
+
             ax.legend()
 
         else:
             articles = Article.objects.filter(term__in=submitted_values)
-            x_values = [article.website for article in articles]
-            y_values = [len(article.title) for article in articles]
+            websites = set([article.website for article in articles])
+
+            # Count the number of articles for each website
+            article_counts = [articles.filter(website=website).count() for website in websites]
 
             # Plot a bar chart
-            plt.bar(x_values, y_values)
-            plt.xlabel('Website')
-            plt.ylabel('Nr Articles')
-            plt.title('Articles by Website for Submitted Values')
-            plt.xticks(rotation=45, ha='right')  # Rotate x-axis labels for better readability
+            plt.figure(figsize=(12, 8))  # Adjust the figure size as needed
+
+            plt.bar(list(websites), article_counts)
+            plt.xlabel('Híroldal')
+            plt.ylabel('Hírek száma')
+            plt.title('\"' + submitted_values[0] + '\" kifejezést tartalmazó címek száma híroldalanként')
+            plt.xticks(rotation=15, ha='right')  # Rotate x-axis labels for better readability
+            # Set y-axis tick labels as integers
+            plt.yticks(range(max(article_counts) + 1))
 
     # Modify filename generation
     cleaned_values = [value.replace(' ', '_').replace('á', 'a').replace('ö', 'o').replace('ú', 'u') for value in submitted_values]

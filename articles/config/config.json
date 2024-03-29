@@ -35,6 +35,11 @@
             "website_url": "https://ripost.hu/",
             "website_rss": "none"
         },
+         {
+            "website_name": "HVG",
+            "website_url": "https://hvg.hu/",
+            "website_rss": "https://hvg.hu/rss"
+        },
         {
             "website_name": "Index",
             "website_url": "https://index.hu/",

@@ -2,19 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Articles</title>
+    <title>Cikk címek</title>
+      {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-4oF82EXeW4tNRGp+DPAo2FCfY7ZyGvqU76g+YXTNvd6I20rR0mj8hCaekivz5qC4Ouee2fMUe8LL2v1wRGocGg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 </head>
 <body>
+
+<nav>
+    <h1>Propaganda Kalkulátor</h1>
+    <div>
+        <a href="/">Főoldal</a>
+        <a href="#">Rólunk</a>
+        <a href="#">Kapcsolat</a>
+    </div>
+</nav>
     <h1>Címek listája</h1>
 
     <ul>
         {% for title in titles %}
             <li>
-                <strong>Website:</strong> {{ title.website }}<br>
-                <strong>Term:</strong> {{ title.term }}<br>
-                <strong>Title:</strong> {{ title.title }}<br>
+                <strong>Weboldal:</strong> {{ title.website }}<br>
+                <strong>Kifejezés:</strong> {{ title.term }}<br>
+                <strong>Cím:</strong> {{ title.title }}<br>
                 <strong>Link:</strong> {{ title.link }}<br>
-                <strong>Publication Date:</strong> {{ title.pub_date }}
+                <strong>Megjelenési dátum:</strong> {{ title.pub_date }}
             </li>
         {% endfor %}
     </ul>
