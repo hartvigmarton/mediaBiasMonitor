@@ -13,6 +13,8 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import os
 from .config_handler import load_config
+import plotly.graph_objects as go
+from plotly.offline import plot
 
 
 def print_value(request):
@@ -138,8 +140,79 @@ def graph_view(request):
 
     return render(request, 'graph.html', {'graph_path': 'graphs/' + filename})
 
+
+def graph_view2(request):
+    if request.method == 'GET':
+        submitted_values = request.GET.getlist('expression')  # Get a list of submitted expressions
+        start_date = request.GET.getlist('start_date')
+        end_date = request.GET.getlist('end_date')
+        if len(submitted_values) > 1:
+
+            all_article_counts = []
+            article_count_for_term = {}
+            counter = 0
+            for value in submitted_values:
+                articles = Article.objects.filter(term__in=[value], pub_date__range=(start_date, end_date))
+                websites = set([article.website for article in articles])
+                article_counts = [articles.filter(website=website).count() for website in websites]
+                article_count_for_term[counter] = article_counts
+                all_article_counts.extend(article_counts)
+                counter += 1
+
+            fig = go.Figure()
+            fig.add_trace(go.Bar(
+                x=list(websites),
+                y=article_count_for_term[0],
+                name=submitted_values[0],
+                marker_color='indianred'
+            ))
+            fig.add_trace(go.Bar(
+                x=list(websites),
+                y=article_count_for_term[1],
+                name=submitted_values[1],
+                marker_color='lightsalmon'
+            ))
+
+            # Here we modify the tickangle of the xaxis, resulting in rotated labels.
+            fig.update_layout(barmode='group', xaxis_tickangle=-45)
+
+            # Convert the figure to HTML
+            plot_div = plot(fig, output_type='div', include_plotlyjs=False)
+
+            # Pass the HTML content to the template
+            return render(request, 'graph2.html', {'plot_div': plot_div})
+
+        else:
+            all_article_counts = []
+            article_count_for_term = {}
+            counter = 0
+            for value in submitted_values:
+                articles = Article.objects.filter(term__in=[value])
+                websites = set([article.website for article in articles])
+                article_counts = [articles.filter(website=website).count() for website in websites]
+                article_count_for_term[counter] = article_counts
+                all_article_counts.extend(article_counts)
+                counter += 1
+
+            fig = go.Figure()
+            fig.add_trace(go.Bar(
+                x=list(websites),
+                y=article_count_for_term[0],
+                name=str(submitted_values),
+                marker_color='indianred'
+            ))
+            fig.update_layout(barmode='group', xaxis_tickangle=-45)
+
+            # Convert the figure to HTML
+            plot_div = plot(fig, output_type='div', include_plotlyjs=False)
+
+            # Pass the HTML content to the template
+            return render(request, 'graph2.html', {'plot_div': plot_div})
+
+
 class ArticleList(APIView):
     def get(self, request):
         articles = Article.objects.all()
         serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
+

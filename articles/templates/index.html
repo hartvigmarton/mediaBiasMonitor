@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Propaganda Calculator</title>
+    <title>média monitor</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-4oF82EXeW4tNRGp+DPAo2FCfY7ZyGvqU76g+YXTNvd6I20rR0mj8hCaekivz5qC4Ouee2fMUe8LL2v1wRGocGg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -12,7 +12,7 @@
 <body>
 
 <nav>
-    <h1>Propaganda Kalkulátor</h1>
+    <h1>média monitor</h1>
     <div>
         <a href="/">Főoldal</a>
         <a href="#">Rólunk</a>
@@ -22,7 +22,7 @@
 
 
             <header>
-                <h1>Üdvözlünk a Propaganda kalkulátoron</h1>
+                <h1>Üdvözlünk a média monitoron</h1>
 
                 <p>Ez az oldal azért jött részre, hogy számszerűsítsen adatokat a magyar médiáról.
                 A magyar közéletben sajnos politikai beállítottságtól függetlenül szokás az ellentétes
@@ -33,7 +33,7 @@
             </header>
 
     <div class="sidebar">
-
+            <!--
             Gráf a kifejezést tartalmazó cikkek számáról. Válassz kifejezést!
             <form method="get" action="{% url 'graph_view' %}">
                 {% csrf_token %}
@@ -49,24 +49,53 @@
                 <input type="submit" value="mehet">
             </form>
 
+            -->
+
+            Gráf a kifejezést tartalmazó cikkek számáról. Válassz kifejezést!
+<form method="get" action="{% url 'graph_view2' %}">
+    {% csrf_token %}
+    <ul class="expression-list">
+        <select name="expression" id="expression">
+            {% for term in terms %}
+                <option value="{{ term }}">{{ term }}</option>
+            {% endfor %}
+        </select>
+        <select name="expression" id="expression">
+            <option value="" disabled selected>Második kifejezés (opcionális)</option>
+            {% for term in terms %}
+                <option value="{{ term }}">{{ term }}</option>
+            {% endfor %}
+        </select>
+        <label for="start_date">Mikortól:</label>
+        <input type="date" id="start_date" name="start_date">
+        <br>
+        <label for="end_date">Meddig:</label>
+        <input type="date" id="end_date" name="end_date">
+    </ul>
+
+
+    <input type="submit" value="mehet">
+</form>
+
+<script src="{% static 'js/custom.js' %}"></script>
+
 
             Lista a kifejezést tartalmazó címekről
             <form method="get" action="{% url 'view_titles' %}">
                 {% csrf_token %}
                         <ul class="expression-list">
 
-                    {% for term in terms %}
-
-                        <input type="radio" id="expression" name="expression" value="{{term}}">
-                        <label for="expression"> {{term}}</label><br>
-
-                    {% endfor %}
+                   <select name="expression" id="expression">
+            {% for term in terms %}
+                <option value="{{ term }}">{{ term }}</option>
+            {% endfor %}
+        </select>
                 </ul>
                 <input type="submit" value="mehet">
             </form>
 
     </div>
-
+    <div class="entry-list">
             <h1>Elemzések</h1>
     <ul>
         {% for entry in entries %}
@@ -76,7 +105,7 @@
 
         {% endfor %}
     </ul>
-
+    </div>
 
     </body>
 </html>

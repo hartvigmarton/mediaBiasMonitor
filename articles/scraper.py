@@ -9,7 +9,7 @@ from datetime import date,datetime
 
 today = date.today()
 logfile_name = "log/" + str(today) + ".log"
-logging.basicConfig(filename=logfile_name, encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename=logfile_name, encoding='utf-8', level=logging.INFO)
 
 def filter_terms(title_dictionary,terms):
     filtered_links = set()
@@ -60,11 +60,11 @@ def build_link_dictionary(soup,website_URL):
 def make_soup(url):
     try:
         r = requests.get(url)
+        soup = BeautifulSoup(r.text, 'lxml')
+        return soup
     except requests.exceptions.ConnectionError:
-        print("connection error")
-        pass
-    soup = BeautifulSoup(r.text, 'lxml')
-    return soup
+        print("Connection error occurred while trying to fetch the URL:", url)
+        return None
 
 def format_website(url):
     soup = make_soup(url)
@@ -76,16 +76,19 @@ def get_titles_with_term(term, filtered_links):
         try:
             formated_page = make_soup(link)
         except urllib.error.HTTPError:
-            pass
-        page_title = formated_page.find("title")
-        try:
-            if term in page_title.string:
-                print(link)
-                print(page_title.string)
-                pair = (page_title.string, link)
-                titles_with_term.append(pair)
-        except (AttributeError, TypeError):
-            pass
+            break
+        if formated_page is not None:
+            page_title = formated_page.find("title")
+            try:
+                if term in page_title.string:
+                    print(link)
+                    print(page_title.string)
+                    pair = (page_title.string, link)
+                    titles_with_term.append(pair)
+            except (AttributeError, TypeError):
+                pass
+        else:
+            break
     #links[key] = titles_with_term
     return titles_with_term
 

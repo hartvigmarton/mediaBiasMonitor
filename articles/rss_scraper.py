@@ -7,16 +7,21 @@ from .config_handler import load_config
 
 def gather_data(website_name,rss):
     data = {}
-    print("gathering data")
     data_list = []
     url = requests.get(rss)
     soup = BeautifulSoup(url.content,'xml')
     entries = soup.find_all('item')
     for entry in entries:
+        article_data = []
         title = entry.title.text
+        article_data.append(title)
         link = entry.link.text
-        pair = (title, link)
-        data_list.append(pair) #make it list with title,link,date
+        article_data.append(link)
+        pub_date = entry.pubDate.text
+        article_data.append(pub_date)
+
+        #pair = (title, link)
+        data_list.append(article_data) #make it list with title,link,date
      #   print(f"Title :{title}\n\nLink: {link}\n\n")
     data[website_name] = data_list
     return data
@@ -30,8 +35,6 @@ def filter_data(website_name,data_dictionary,terms):
         articles_with_term = []
         for pair in data_dictionary.get(website_name):
             if term in pair[0]:
-               # print(pair[0])
-                #articles_with_term.append(pair)
                 data_list.append(pair)
                 articles_with_term.append(pair)
         term_dict[term] = articles_with_term

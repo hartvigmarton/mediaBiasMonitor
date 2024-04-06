@@ -23,13 +23,17 @@ def update_database():
                     existing_article = Article.objects.filter(title=pair[0]).first()
                     if not existing_article:
                         logging.info("Új cím hozzáadása: " + pair[0] + " " + website_name + " " + str(datetime.now()))
-                        article = Article(title=pair[0], term=term, website=website_name, link=pair[1])
+                        article = Article(title=pair[0], term=term, website=website_name, link=pair[1],pub_date=pair[2])
                         article.save()
         else:
-            #magyar nemzet case ide
-            print("website does not have rss feed")
+            #magyar nemzet,ripost case ide
+            print(website_name,"website does not have rss feed")
             #without rss feed
-            soup = make_soup(url_dict[website_name])
+            try:
+                soup = make_soup(url_dict[website_name])
+            except UnboundLocalError:
+                print("Nincs kapcsolat a weboldallal")
+                break
             logging.info("linkek gyűjtése" + str(datetime.now()))
             link_dict = build_link_dictionary(soup, url_dict[website_name])
             filtered_links = filter_links(link_dict, url_dict[website_name])
@@ -43,3 +47,7 @@ def update_database():
                         article = Article(title=pair[0], term=term, website=website_name, link=pair[1])
                         article.save()
             logging.info("Adatbázis frissítve" + str(datetime.now()))
+    print("Művelet befejezve", str(datetime.now()))
+
+if __name__=="__main__":
+    update_database()
