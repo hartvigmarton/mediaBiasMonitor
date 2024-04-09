@@ -15,6 +15,7 @@ import os
 from .config_handler import load_config
 import plotly.graph_objects as go
 from plotly.offline import plot
+import datetime as DT
 
 
 def print_value(request):
@@ -28,7 +29,18 @@ def print_value(request):
 def view_titles(request):
     if request.method == 'GET':
         submitted_value = request.GET.get('expression', '')
-        titles = Article.objects.filter(term=submitted_value) # Retrieve all articles from the database
+        start_date = request.GET.getlist('start_date')[0]
+        end_date = request.GET.getlist('end_date')[0]
+        today = DT.date.today()
+        week_ago = today - DT.timedelta(days=7)
+
+        if start_date == "":
+            start_date = week_ago
+
+        if end_date == "":
+            end_date = today
+
+        titles = Article.objects.filter(term=submitted_value,pub_date__range=(start_date, end_date)) # Retrieve all articles from the database
         return render(request, 'titles.html', {'titles': titles})
     return HttpResponse("Form submitted successfully")
 
@@ -144,8 +156,17 @@ def graph_view(request):
 def graph_view2(request):
     if request.method == 'GET':
         submitted_values = request.GET.getlist('expression')  # Get a list of submitted expressions
-        start_date = request.GET.getlist('start_date')
-        end_date = request.GET.getlist('end_date')
+        start_date = request.GET.getlist('start_date')[0]
+        end_date = request.GET.getlist('end_date')[0]
+        today = DT.date.today()
+        week_ago = today - DT.timedelta(days=7)
+
+        if start_date == "":
+            start_date = week_ago
+
+        if end_date == "":
+            end_date = today
+
         if len(submitted_values) > 1:
 
             all_article_counts = []

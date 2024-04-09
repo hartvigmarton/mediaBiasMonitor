@@ -18,12 +18,12 @@ def update_database():
             data_dictionary = gather_data(website_name, rss_dict.get(website_name))
             data_dictionary, term_dict = filter_data(website_name, data_dictionary, terms)
             for term in terms:
-                for pair in term_dict[term]:
-                    print(pair)
-                    existing_article = Article.objects.filter(title=pair[0]).first()
+                for data in term_dict[term]:
+                    print(data)
+                    existing_article = Article.objects.filter(title=data[0], term=term).first()
                     if not existing_article:
-                        logging.info("Új cím hozzáadása: " + pair[0] + " " + website_name + " " + str(datetime.now()))
-                        article = Article(title=pair[0], term=term, website=website_name, link=pair[1],pub_date=pair[2])
+                        logging.info("Új cím hozzáadása: " + data[0] + " " + website_name + " " + str(datetime.now()))
+                        article = Article(title=data[0], term=term, website=website_name, link=data[1],pub_date=data[2])
                         article.save()
         else:
             #magyar nemzet,ripost case ide
@@ -39,12 +39,12 @@ def update_database():
             filtered_links = filter_links(link_dict, url_dict[website_name])
             for term in terms:
                 titles_with_term = get_titles_with_term(term, filtered_links)
-                for pair in titles_with_term:
-                    existing_article = Article.objects.filter(title=pair[0]).first()
+                for data in titles_with_term:
+                    existing_article = Article.objects.filter(title=data[0]).first()
                     if not existing_article:
-                        logging.info("Új cím hozzáadása: " + pair[0] + " " + website_name + " " + str(datetime.now()))
+                        logging.info("Új cím hozzáadása: " + data[0] + " " + website_name + " " + str(datetime.now()))
 
-                        article = Article(title=pair[0], term=term, website=website_name, link=pair[1])
+                        article = Article(title=data[0], term=term, website=website_name, link=data[1])
                         article.save()
             logging.info("Adatbázis frissítve" + str(datetime.now()))
     print("Művelet befejezve", str(datetime.now()))

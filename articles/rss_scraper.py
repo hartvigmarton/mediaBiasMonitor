@@ -8,7 +8,11 @@ from .config_handler import load_config
 def gather_data(website_name,rss):
     data = {}
     data_list = []
-    url = requests.get(rss)
+    try:
+        url = requests.get(rss)
+    except requests.exceptions.ConnectionError:
+        print("Connection refused by", website_name)
+
     soup = BeautifulSoup(url.content,'xml')
     entries = soup.find_all('item')
     for entry in entries:

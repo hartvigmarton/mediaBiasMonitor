@@ -1,4 +1,6 @@
 -change function names and variable names
--add css
--get pubdate for articles
--fix pubdate
+-simplify project structure
+-improve css
+-get update for sites without rss
+-handle requests.exceptions.ConnectionError
+-copy titles with multiple terms to each term
