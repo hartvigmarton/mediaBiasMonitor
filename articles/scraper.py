@@ -1,15 +1,7 @@
-from .models import Article,Blog_Post  # Import your model for data storage
 import requests
 from bs4 import BeautifulSoup
 import urllib.error
-import json
-import os
-import logging
-from datetime import date,datetime
 
-today = date.today()
-logfile_name = "log/" + str(today) + ".log"
-logging.basicConfig(filename=logfile_name, encoding='utf-8', level=logging.INFO)
 
 def filter_terms(title_dictionary,terms):
     filtered_links = set()

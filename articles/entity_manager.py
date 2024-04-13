@@ -5,6 +5,11 @@ from .models import Article
 import time
 from .rss_scraper import gather_data, filter_data
 from .config_handler import load_config, read_config_data
+from datetime import date,datetime
+
+today = date.today()
+logfile_name = "log/" + str(today) + ".log"
+logging.basicConfig(filename=logfile_name, encoding='utf-8', level=logging.INFO)
 
 
 def update_database():

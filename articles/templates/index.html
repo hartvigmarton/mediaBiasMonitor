@@ -11,96 +11,83 @@
 </head>
 <body>
 
-<nav>
-    <h1>média monitor</h1>
-    <div>
-        <a href="/">Főoldal</a>
-        <a href="#">Rólunk</a>
-        <a href="#">Kapcsolat</a>
-    </div>
-</nav>
+    <nav>
+        <h1>média monitor</h1>
+        <div>
+            <a href="/">Főoldal</a>
+            <a href="#">Rólunk</a>
+            <a href="#">Kapcsolat</a>
+        </div>
+    </nav>
 
 
-            <header>
-                <h1>Üdvözlünk a média monitoron</h1>
+    <header>
+        <h1>Üdvözlünk a média monitoron</h1>
 
-                <p>Ez az oldal azért jött részre, hogy számszerűsítsen adatokat a magyar médiáról.
-                A magyar közéletben sajnos politikai beállítottságtól függetlenül szokás az ellentétes
-                politikai oldal médiáját propagandázni. Ennek szeretnénk véget vetni és számokkal
-                bizonyítani bizonyos kérdéseket.<br>
-                Kezdetben az oldal főleg hírportálokon megjelenő címekben található kifejezések alapján
-                    fog adatokat közölni, majd ahogy haladunk előrébb, tartalom elemzéseket is mutatunk majd. </p>
-            </header>
+        <p>Ez az oldal azért jött részre, hogy számszerűsítsen adatokat a magyar médiáról.
+        A magyar közéletben sajnos politikai beállítottságtól függetlenül szokás az ellentétes
+        politikai oldal médiáját propagandázni. Ennek szeretnénk véget vetni és számokkal
+        bizonyítani bizonyos kérdéseket.<br>
+        Kezdetben az oldal főleg hírportálokon megjelenő címekben található kifejezések alapján
+            fog adatokat közölni, majd ahogy haladunk előrébb, tartalom elemzéseket is mutatunk majd. </p>
+    </header>
 
     <div class="sidebar">
-            <!--
-            Gráf a kifejezést tartalmazó cikkek számáról. Válassz kifejezést!
-            <form method="get" action="{% url 'graph_view' %}">
-                {% csrf_token %}
-                        <ul class="expression-list">
 
+        Gráf a kifejezést tartalmazó cikkek számáról. Válassz kifejezést!
+        <form method="get" action="{% url 'graph_view2' %}">
+            {% csrf_token %}
+            <ul class="expression-list">
+                <select name="expression" id="expression">
                     {% for term in terms %}
-
-                        <input type="checkbox" id="expression" name="expression" value="{{term}}">
-                        <label for="expression"> {{term}}</label><br>
-
+                        <option value="{{ term }}">{{ term }}</option>
                     {% endfor %}
-                </ul>
-                <input type="submit" value="mehet">
-            </form>
-
-            -->
-
-            Gráf a kifejezést tartalmazó cikkek számáról. Válassz kifejezést!
-<form method="get" action="{% url 'graph_view2' %}">
-    {% csrf_token %}
-    <ul class="expression-list">
-        <select name="expression" id="expression">
-            {% for term in terms %}
-                <option value="{{ term }}">{{ term }}</option>
-            {% endfor %}
-        </select>
-        <select name="expression" id="expression">
-            <option value="" disabled selected>Második kifejezés (opcionális)</option>
-            {% for term in terms %}
-                <option value="{{ term }}">{{ term }}</option>
-            {% endfor %}
-        </select>
-        <label for="start_date">Mikortól:</label>
-        <input type="date" id="start_date" name="start_date">
-        <br>
-        <label for="end_date">Meddig:</label>
-        <input type="date" id="end_date" name="end_date">
-    </ul>
+                </select>
+                <select name="expression" id="expression">
+                    <option value="" disabled selected>Második kifejezés (opcionális)</option>
+                    {% for term in terms %}
+                        <option value="{{ term }}">{{ term }}</option>
+                    {% endfor %}
+                </select>
+                <label for="start_date">Mikortól:</label>
+                <input type="date" id="start_date" name="start_date">
+                <br>
+                <label for="end_date">Meddig:</label>
+                <input type="date" id="end_date" name="end_date">
+            </ul>
 
 
-    <input type="submit" value="mehet">
-</form>
+            <input type="submit" value="mehet">
+        </form>
 
-<script src="{% static 'js/custom.js' %}"></script>
+        <script src="{% static 'js/custom.js' %}"></script>
 
 
-            Lista a kifejezést tartalmazó címekről
-            <form method="get" action="{% url 'view_titles' %}">
-                {% csrf_token %}
-                        <ul class="expression-list">
+                    Lista a kifejezést tartalmazó címekről
+                    <form method="get" action="{% url 'view_titles' %}">
+                        {% csrf_token %}
+                                <ul class="expression-list">
 
-                   <select name="expression" id="expression">
-            {% for term in terms %}
-                <option value="{{ term }}">{{ term }}</option>
-            {% endfor %}
-        </select>
-                             <label for="start_date">Mikortól:</label>
-        <input type="date" id="start_date" name="start_date">
-        <br>
-        <label for="end_date">Meddig:</label>
-        <input type="date" id="end_date" name="end_date">
+                           <select name="expression" id="expression">
+                    {% for term in terms %}
+                        <option value="{{ term }}">{{ term }}</option>
+                    {% endfor %}
+                </select>
+                                     <label for="start_date">Mikortól:</label>
+                <input type="date" id="start_date" name="start_date">
+                <br>
+                <label for="end_date">Meddig:</label>
+                <input type="date" id="end_date" name="end_date">
 
-                </ul>
-                <input type="submit" value="mehet">
-            </form>
+                        </ul>
+                        <input type="submit" value="mehet">
+                    </form>
 
     </div>
+      <div class="graph">
+        {% include 'graph2.html' %}
+        </div>
+
     <div class="entry-list">
             <h1>Elemzések</h1>
     <ul>
@@ -112,6 +99,7 @@
         {% endfor %}
     </ul>
     </div>
+
 
     </body>
 </html>

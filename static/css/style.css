@@ -123,3 +123,6 @@ body {
 .expression-list input[type="checkbox"]:hover {
     border-color: #666;
 }
+.graph{
+    padding-left: 300px;
+}

@@ -16,6 +16,7 @@ from .config_handler import load_config
 import plotly.graph_objects as go
 from plotly.offline import plot
 import datetime as DT
+import plotly.express as px
 
 
 def print_value(request):
@@ -64,9 +65,10 @@ def list_entries(request):
 
 def index(request):
     entries = Blog_Post.objects.all()
-    websites,terms = load_config()
+    websites, terms = load_config()
+    plot_div = index_graph()
 
-    return render(request, 'index.html', {'entries': entries, 'terms': terms})
+    return render(request, 'index.html', {'entries': entries, 'terms': terms, 'plot_div': plot_div})
 
 
 def graph_view(request):
@@ -162,6 +164,7 @@ def graph_view2(request):
         week_ago = today - DT.timedelta(days=7)
 
         if start_date == "":
+            print("ürest startdate")
             start_date = week_ago
 
         if end_date == "":
@@ -180,7 +183,7 @@ def graph_view2(request):
                 all_article_counts.extend(article_counts)
                 counter += 1
 
-            fig = go.Figure()
+            fig = go.Figure(layout_title_text = "Kifejezést tartalmazó címek száma újságonként " + str(start_date) + " és " + str(end_date) + " között.")
             fig.add_trace(go.Bar(
                 x=list(websites),
                 y=article_count_for_term[0],
@@ -215,7 +218,7 @@ def graph_view2(request):
                 all_article_counts.extend(article_counts)
                 counter += 1
 
-            fig = go.Figure()
+            fig = go.Figure(layout_title_text = "Kifejezést tartalmazó címek száma újságonként")
             fig.add_trace(go.Bar(
                 x=list(websites),
                 y=article_count_for_term[0],
@@ -229,6 +232,96 @@ def graph_view2(request):
 
             # Pass the HTML content to the template
             return render(request, 'graph2.html', {'plot_div': plot_div})
+
+def index_graph():
+    today = DT.date.today()
+    week_ago = today - DT.timedelta(days=7)
+    terms = ["Varga Judit","Magyar Péter"]
+    all_article_counts = []
+    article_count_for_term = {}
+    counter = 0
+    for value in terms:
+        articles = Article.objects.filter(term__in=[value], pub_date__range=(week_ago, today))
+        websites = set([article.website for article in articles])
+        article_counts = [articles.filter(website=website).count() for website in websites]
+        article_count_for_term[counter] = article_counts
+        all_article_counts.extend(article_counts)
+        counter += 1
+
+    fig = go.Figure( layout_title_text = "Kifejezést tartalmazó címek száma újságonként")
+
+    fig.add_trace(go.Bar(
+        x=list(websites),
+        y=article_count_for_term[0],
+        name=terms[0],
+        marker_color='indianred'
+    ))
+    fig.add_trace(go.Bar(
+        x=list(websites),
+        y=article_count_for_term[1],
+        name=terms[1],
+        marker_color='lightsalmon'
+    ))
+
+    # Here we modify the tickangle of the xaxis, resulting in rotated labels.
+    fig.update_layout(barmode='group', xaxis_tickangle=-45)
+    fig.update_layout(
+        autosize=False,
+        width=500,
+        height=500,
+        margin=dict(
+            l=50,
+            r=50,
+            b=100,
+            t=100,
+            pad=4
+        ),
+        paper_bgcolor="#f0f7ff",)
+    # Convert the figure to HTML
+    plot_div = plot(fig, output_type='div', include_plotlyjs=False)
+
+    return plot_div
+def daily_number_of_articles_graph():
+    today = DT.date.today()
+    week_ago = today - DT.timedelta(days=7)
+    terms = ["Varga Judit", "Magyar Péter"]
+    all_article_counts = []
+    article_count_for_term = {}
+    counter = 0
+    for value in terms:
+        articles = Article.objects.filter(term__in=[value], pub_date__range=(week_ago, today))
+        websites = sorted(set([article.website for article in articles]))
+        article_counts = [articles.filter(website=website).count() for website in websites]
+        article_count_for_term[counter] = article_counts
+        all_article_counts.extend(article_counts)
+        counter += 1
+
+    fig = go.Figure(layout_title_text="Kifejezést tartalmazó címek száma újságonként")
+
+    for i in range(len(terms)):
+        fig.add_trace(go.Scatter(
+            x=websites,
+            y=article_count_for_term[i],
+            mode='lines+markers',
+            name=terms[i],
+            line=dict(color='rgb(31, 119, 180)'),
+            marker=dict(color='rgb(31, 119, 180)', size=10)
+        ))
+
+    fig.update_layout(
+        xaxis=dict(title='Websites'),
+        yaxis=dict(title='Number of Articles'),
+        autosize=False,
+        width=800,
+        height=600,
+        margin=dict(l=50, r=50, b=100, t=100, pad=4),
+        paper_bgcolor="#f0f7ff",
+    )
+
+    # Convert the figure to HTML
+    plot_div = fig.to_html()
+
+    return plot_div
 
 
 class ArticleList(APIView):
