@@ -1,13 +1,18 @@
-from .scraper import format_website, build_link_dictionary, filter_links, get_titles_with_term,make_soup
+from scraper import format_website, build_link_dictionary, filter_links, get_titles_with_term,make_soup
 import logging
 from datetime import datetime
-from .models import Article
+from models import Article
 import time
-from .rss_scraper import gather_data, filter_data
-from .config_handler import load_config, read_config_data
+from rss_scraper import gather_data, filter_data
+from config_handler import load_config, read_config_data
 from datetime import date,datetime
-
+import os
+# Make sure Django environment is set up
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myproject.settings')
+import django
+django.setup()
 today = date.today()
+
 logfile_name = "log/" + str(today) + ".log"
 logging.basicConfig(filename=logfile_name, encoding='utf-8', level=logging.INFO)
 
