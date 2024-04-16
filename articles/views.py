@@ -66,7 +66,7 @@ def list_entries(request):
 def index(request):
     entries = Blog_Post.objects.all()
     websites, terms = load_config()
-    plot_div = index_graph()
+    plot_div = daily_number_of_articles_graph()
 
     return render(request, 'index.html', {'entries': entries, 'terms': terms, 'plot_div': plot_div})
 
@@ -281,6 +281,13 @@ def index_graph():
     plot_div = plot(fig, output_type='div', include_plotlyjs=False)
 
     return plot_div
+
+def dates_between(start_date, end_date):
+    delta = DT.timedelta(days=1)
+    current_date = start_date
+    while current_date <= end_date:
+        yield current_date
+        current_date += delta
 def daily_number_of_articles_graph():
     today = DT.date.today()
     week_ago = today - DT.timedelta(days=7)
@@ -288,29 +295,40 @@ def daily_number_of_articles_graph():
     all_article_counts = []
     article_count_for_term = {}
     counter = 0
+
+    days = list(dates_between(week_ago,today))
+
     for value in terms:
         articles = Article.objects.filter(term__in=[value], pub_date__range=(week_ago, today))
-        websites = sorted(set([article.website for article in articles]))
-        article_counts = [articles.filter(website=website).count() for website in websites]
+        article_counts = [articles.filter(pub_date__date=day).count() for day in days]
+        print(article_counts)
         article_count_for_term[counter] = article_counts
         all_article_counts.extend(article_counts)
         counter += 1
 
     fig = go.Figure(layout_title_text="Kifejezést tartalmazó címek száma újságonként")
 
-    for i in range(len(terms)):
-        fig.add_trace(go.Scatter(
-            x=websites,
-            y=article_count_for_term[i],
-            mode='lines+markers',
-            name=terms[i],
-            line=dict(color='rgb(31, 119, 180)'),
-            marker=dict(color='rgb(31, 119, 180)', size=10)
-        ))
+
+    fig.add_trace(go.Scatter(
+        x=days,
+        y=article_count_for_term[0],
+        mode='lines+markers',
+        name=terms[0],
+        line=dict(color='indianred'),
+        marker=dict(color='indianred', size=10)
+    ))
+    fig.add_trace(go.Scatter(
+        x=days,
+        y=article_count_for_term[1],
+        mode='lines+markers',
+        name=terms[1],
+        line=dict(color='lightsalmon'),
+        marker=dict(color='lightsalmon', size=10)
+    ))
 
     fig.update_layout(
-        xaxis=dict(title='Websites'),
-        yaxis=dict(title='Number of Articles'),
+        xaxis=dict(title='Dátum'),
+        yaxis=dict(title='Cikkek száma'),
         autosize=False,
         width=800,
         height=600,
