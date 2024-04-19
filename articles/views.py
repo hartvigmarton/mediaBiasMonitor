@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import ArticleSerializer
 from .rss_scraper import gather_data
-from .entity_manager import update_database
+#from .entity_manager import update_database
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -66,7 +66,7 @@ def list_entries(request):
 def index(request):
     entries = Blog_Post.objects.all()
     websites, terms = load_config()
-    plot_div = daily_number_of_articles_graph()
+    plot_div = daily_number_of_articles_graph_per_medium()
 
     return render(request, 'index.html', {'entries': entries, 'terms': terms, 'plot_div': plot_div})
 
@@ -296,18 +296,16 @@ def daily_number_of_articles_graph():
     article_count_for_term = {}
     counter = 0
 
-    days = list(dates_between(week_ago,today))
+    days = list(dates_between(week_ago, today))
 
     for value in terms:
         articles = Article.objects.filter(term__in=[value], pub_date__range=(week_ago, today))
         article_counts = [articles.filter(pub_date__date=day).count() for day in days]
-        print(article_counts)
         article_count_for_term[counter] = article_counts
         all_article_counts.extend(article_counts)
         counter += 1
 
     fig = go.Figure(layout_title_text="Kifejezést tartalmazó címek száma újságonként")
-
 
     fig.add_trace(go.Scatter(
         x=days,
@@ -327,13 +325,18 @@ def daily_number_of_articles_graph():
     ))
 
     fig.update_layout(
-        xaxis=dict(title='Dátum'),
+        xaxis=dict(title='Dátum', tickangle=-90, tickfont=dict(size=10)),
         yaxis=dict(title='Cikkek száma'),
         autosize=False,
         width=800,
         height=600,
         margin=dict(l=50, r=50, b=100, t=100, pad=4),
+        plot_bgcolor="#ffffff",
         paper_bgcolor="#f0f7ff",
+        xaxis_showgrid=True,
+        yaxis_showgrid=True,
+        xaxis_gridcolor='black',
+        yaxis_gridcolor='black',
     )
 
     # Convert the figure to HTML
@@ -341,6 +344,66 @@ def daily_number_of_articles_graph():
 
     return plot_div
 
+def daily_number_of_articles_graph_per_medium():
+    today = DT.date.today()
+    week_ago = today - DT.timedelta(days=7)
+    term = "Magyar Péter"
+    article_count_for_website = {}
+    website_color_dictionary = {
+        "Telex": "rgb(0,255,187)",
+        "444": "rgb(255,255,115)",
+        "Origo": "rgb(5,25,210)",
+        "Index": "rgb(255,153,0)",
+        "Magyar Hang": "rgb(221,76,79)",
+        "NÉPSZAVA": "rgb(21,126,252)",
+        "mandiner": "rgb(176,133,32)",
+        "Magyar Nemzet": "rgb(0,0,0)",
+        "Ripost": "rgb(235,0,0)",
+        "PestiSrácok": "rgb(140,140,140)",
+        "NOL": "rgb(76,4,54)",
+        "HVG": "rgb(226,89,0)"
+    }
+    days = list(dates_between(week_ago, today))
+
+    articles = Article.objects.filter(term=term, pub_date__range=(week_ago, today))
+
+    for article in articles:
+        if article.website not in article_count_for_website:
+            article_count_for_website[article.website] = [0] * len(days)
+        idx = days.index(article.pub_date.date())
+        article_count_for_website[article.website][idx] += 1
+
+    fig = go.Figure(layout_title_text="\"" + term + "\" Kifejezést tartalmazó címek száma újságonként")
+
+    for website, counts in article_count_for_website.items():
+        fig.add_trace(go.Scatter(
+            x=days,
+            y=counts,
+            mode='lines+markers',
+            name=website,
+            line=dict(color=website_color_dictionary.get(website, 'grey')),  # Default color to grey if not found
+            marker=dict(color=website_color_dictionary.get(website, 'grey'), size=10)  # Default color to grey if not found
+        ))
+
+    fig.update_layout(
+        xaxis=dict(title='Dátum', tickangle=-90, tickfont=dict(size=10)),
+        yaxis=dict(title='Cikkek száma'),
+        autosize=False,
+        width=800,
+        height=600,
+        margin=dict(l=50, r=50, b=100, t=100, pad=4),
+        plot_bgcolor="#ffffff",
+        paper_bgcolor="#f0f7ff",
+        xaxis_showgrid=True,
+        yaxis_showgrid=True,
+        xaxis_gridcolor='black',
+        yaxis_gridcolor='black',
+    )
+
+    # Convert the figure to HTML
+    plot_div = fig.to_html()
+
+    return plot_div
 
 class ArticleList(APIView):
     def get(self, request):

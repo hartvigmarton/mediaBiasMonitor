@@ -17,6 +17,9 @@ nav a:hover {
     background-color: #ddd;
     color: black;
 }
+.container {
+    display: flex; /* Use flexbox */
+}
 
 /* Body styles */
 body {
@@ -30,8 +33,10 @@ body {
 .main-content {
     padding: 20px;
 }
-.entry-list{
-    padding: 80px;
+.entry-list {
+    float: left;
+    width: calc(50% - 25px); /* 50% of the sidebar width minus some padding */
+    padding-left: 25px; /* Add some padding between entry list and search field */
 }
 
 .main-content header {
@@ -55,14 +60,109 @@ body {
 /* Styles for the sidebar */
 .sidebar {
     float: left;
-    width: 300px; /* Adjust width as needed */
-    padding-right: 50px;
+    width: 500px; /* Adjust width as needed */
+     text-align: justify;
+  text-justify: inter-word;
+      flex: 1; /* Take up remaining space */
+
 }
 
+.search-field {
+    float: left;
+    width: calc(50% - 25px); /* 50% of the sidebar width minus some padding */
+    padding-right: 25px; /* Add some padding between search field and entry list */
+    text-align: justify;
+    text-justify: inter-word;
+}
 /* Styles for the main content */
 .content {
     margin-left: 320px; /* Adjust margin to accommodate the sidebar width */
 }
+
+.media-names {
+    text-decoration: none; /* Remove underline */
+        color: inherit; /* Inherit the color from the parent element */
+
+    float: center; /* Float the block to the right */
+    width: 100px; /* Adjust the width as needed */
+    margin-top: 20px; /* Add some margin to separate from other content */
+       flex: 1; /* Take up remaining space */
+    text-align: center; /* Center the content horizontally */
+}
+.block {
+    width: calc(100% - 10px); /* Set the width of each block */
+    height: 40px; /* Set the height of each block */
+    line-height: 40px; /* Center the text vertically */
+    background-color: #333; /* Set the background color for blocks */
+    color: white; /* Set the text color */
+    display: inline-block; /* Display blocks inline */
+    text-align: left; /* Center the text horizontally */
+    font-family: 'Roboto', sans-serif; /* Set the font family */
+}
+
+.block::after {
+    content: ""; /* Add content */
+    display: inline-block; /* Display as inline-block */
+    width: calc(100% - 30ch); /* Set width to fill remaining space */
+}
+
+
+.media-names td {
+    display: block;
+    text-align: left; /* Center the content horizontally */
+}
+#telex {
+ display: inline-block;
+  color: white;
+  background-color:rgb(0,255,187);
+}
+#negy44{
+  color: black;
+  background-color:rgb(255,255,115);
+}
+#origo{
+  color: white;
+  background-color:rgb(5,25,210);
+}
+#index{
+  color: black;
+  background-color:rgb(255,153,0);
+}
+
+#magyar-hang{
+  color: black;
+  background-color:rgb(221,76,79);
+}
+#nepszava{
+  color: black;
+  background-color:rgb(21,126,252);
+}
+#mandiner{
+  color: black;
+  background-color:rgb(176,133,32);
+}
+#magyar-nemzet{
+  color: white;
+  background-color:rgb(0,0,0);
+}
+#ripost{
+  color: white;
+  background-color:rgb(235,0,0);
+}
+#pestiSracok{
+  color: white;
+  background-color:rgb(140,140,140);
+}
+#nol{
+  color: white;
+  background-color:rgb(76,4,54);
+}
+#hvg{
+  color: white;
+  background-color:rgb(226,89,0);
+}
+
+
 /* Dropdown menu styles */
 .expression-list select {
     background-color: #fff;
@@ -124,5 +224,5 @@ body {
     border-color: #666;
 }
 .graph{
-    padding-left: 300px;
+    flex: 1; /* Take up remaining space */
 }
