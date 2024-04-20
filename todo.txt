@@ -3,4 +3,5 @@
 -improve css
 -get update for sites without rss
 -handle requests.exceptions.ConnectionError
--copy titles with multiple terms to each term
+-refactor "entry" to "post"
+-fix concurrency in data gathering

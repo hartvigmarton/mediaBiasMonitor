@@ -17,6 +17,7 @@ import plotly.graph_objects as go
 from plotly.offline import plot
 import datetime as DT
 import plotly.express as px
+from django.shortcuts import render, get_object_or_404
 
 
 def print_value(request):
@@ -45,17 +46,6 @@ def view_titles(request):
         return render(request, 'titles.html', {'titles': titles})
     return HttpResponse("Form submitted successfully")
 
-def periodic_task():
-    while True:
-        update_database()  # Call your function
-        time.sleep(3600)  # Sleep for 5 minutes (300 seconds)
-
-
-def start_periodic_task(request):
-    periodic_thread = threading.Thread(target=periodic_task)
-    periodic_thread.daemon = True  # This ensures the thread terminates when the main program does
-    periodic_thread.start()
-    return HttpResponse("Adatbázis frissítése")
 
 
 def list_entries(request):
@@ -70,6 +60,9 @@ def index(request):
 
     return render(request, 'index.html', {'entries': entries, 'terms': terms, 'plot_div': plot_div})
 
+def blog_post_detail(request, post_id):
+    post = get_object_or_404(Blog_Post, pk=post_id)
+    return render(request, 'blog/post_detail.html', {'post': post})
 
 def graph_view(request):
     if request.method == 'GET':
@@ -164,7 +157,6 @@ def graph_view2(request):
         week_ago = today - DT.timedelta(days=7)
 
         if start_date == "":
-            print("ürest startdate")
             start_date = week_ago
 
         if end_date == "":
@@ -233,18 +225,24 @@ def graph_view2(request):
             # Pass the HTML content to the template
             return render(request, 'graph2.html', {'plot_div': plot_div})
 
-def index_graph():
+def index_graph(request):
     today = DT.date.today()
     week_ago = today - DT.timedelta(days=7)
-    terms = ["Varga Judit","Magyar Péter"]
+    terms = ["Szentkirályi","Karácsony","Vitézy"]
     all_article_counts = []
     article_count_for_term = {}
     counter = 0
+    websites = []
+    set_size = 0
     for value in terms:
         articles = Article.objects.filter(term__in=[value], pub_date__range=(week_ago, today))
-        websites = set([article.website for article in articles])
+        if len(set([article.website for article in articles])) > set_size:
+            websites = set([article.website for article in articles])
+            set_size = len(set([article.website for article in articles]))
         article_counts = [articles.filter(website=website).count() for website in websites]
-        article_count_for_term[counter] = article_counts
+        print(websites)
+        print(article_counts)
+        article_count_for_term[value] = article_counts
         all_article_counts.extend(article_counts)
         counter += 1
 
@@ -252,15 +250,21 @@ def index_graph():
 
     fig.add_trace(go.Bar(
         x=list(websites),
-        y=article_count_for_term[0],
-        name=terms[0],
-        marker_color='indianred'
+        y=article_count_for_term["Szentkirályi"],
+        name="Szentkirályi",
+        marker_color='orange'
     ))
     fig.add_trace(go.Bar(
         x=list(websites),
-        y=article_count_for_term[1],
-        name=terms[1],
-        marker_color='lightsalmon'
+        y=article_count_for_term["Karácsony"],
+        name="Karácsony",
+        marker_color='rgb(169, 213, 34)'
+    ))
+    fig.add_trace(go.Bar(
+        x=list(websites),
+        y=article_count_for_term["Vitézy"],
+        name="Vitézy",
+        marker_color='#A0CDFF'
     ))
 
     # Here we modify the tickangle of the xaxis, resulting in rotated labels.
@@ -280,8 +284,7 @@ def index_graph():
     # Convert the figure to HTML
     plot_div = plot(fig, output_type='div', include_plotlyjs=False)
 
-    return plot_div
-
+    return render(request, 'graph2.html', {'plot_div': plot_div})
 def dates_between(start_date, end_date):
     delta = DT.timedelta(days=1)
     current_date = start_date

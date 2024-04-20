@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ post.title }}</title>
+</head>
+<body>
+    <h1>{{ post.title }}</h1>
+    <p>{{ post.content }}</p>
+    <p>Published on: {{ post.pub_date }}</p>
+    <p>Link to this post: <a href="{% url 'blog_post_detail' post.id %}">View Post</a></p>
+</body>
+</html>

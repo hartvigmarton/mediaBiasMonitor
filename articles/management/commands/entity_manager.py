@@ -20,8 +20,8 @@ class Command(BaseCommand):
 
         for website_name in website_names:
             # with rss feed
+            logging.info("címek gyűjtése a következő oldalról: " + website_name  + " " + str(datetime.now()))
             if rss_dict.get(website_name) != "none":
-                print(website_name)
                 data_dictionary = gather_data(website_name, rss_dict.get(website_name))
                 data_dictionary, term_dict = filter_data(website_name, data_dictionary, terms)
                 for term in terms:
@@ -53,5 +53,6 @@ class Command(BaseCommand):
 
                             article = Article(title=data[0], term=term, website=website_name, link=data[1])
                             article.save()
-                logging.info("Adatbázis frissítve" + str(datetime.now()))
+            logging.info("gyűjtés befejezve a következő oldalon: " + website_name + " " +str(datetime.now()))
+        logging.info("Adatbázis frissítve" + str(datetime.now()))
         print("Művelet befejezve", str(datetime.now()))
