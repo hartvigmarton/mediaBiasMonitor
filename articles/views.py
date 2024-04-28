@@ -349,6 +349,7 @@ def daily_number_of_articles_graph():
 
 def daily_number_of_articles_graph_per_medium():
     today = DT.date.today()
+    yesterday = today - DT.timedelta(days=1)
     week_ago = today - DT.timedelta(days=7)
     term = "Magyar Péter"
     article_count_for_website = {}
@@ -366,9 +367,9 @@ def daily_number_of_articles_graph_per_medium():
         "NOL": "rgb(76,4,54)",
         "HVG": "rgb(226,89,0)"
     }
-    days = list(dates_between(week_ago, today))
+    days = list(dates_between(week_ago, yesterday))
 
-    articles = Article.objects.filter(term=term, pub_date__range=(week_ago, today))
+    articles = Article.objects.filter(term=term, pub_date__range=(week_ago, yesterday))
 
     for article in articles:
         if article.website not in article_count_for_website:
