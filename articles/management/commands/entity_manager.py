@@ -32,27 +32,48 @@ class Command(BaseCommand):
                                     logging.info("Új cím hozzáadása: " + data[0] + " " + website_name + " " + str(datetime.now()))
                                     article = Article(title=data[0], term=term, website=website_name, link=data[1], pub_date=data[2])
                                     article.save()
-                    """""
                     else:
                         print(website_name, "website does not have rss feed")
                         try:
+                            logging.info(" soup = make_soup(url_dict[website_name]) started on " + website_name + " " +
+                                         str(datetime.now()))
                             soup = make_soup(url_dict[website_name])
+                            logging.info(" soup = make_soup(url_dict[website_name]) finished on " + website_name + " " +
+                                         str(datetime.now()))
+
                         except Exception as soup_error:
                             logging.error(f"Error occurred while making soup for {website_name}: {soup_error}")
                             continue
 
                         logging.info("linkek gyűjtése" + str(datetime.now()))
+                        logging.info(" link_dict = build_link_dictionary(soup, url_dict[website_name]) started on " + website_name + " " + str(
+                            datetime.now()))
+
                         link_dict = build_link_dictionary(soup, url_dict[website_name])
+                        logging.info(
+                            " link_dict = build_link_dictionary(soup, url_dict[website_name]) ended on " + website_name + " " + str(
+                                datetime.now()))
+                        logging.info(
+                            "  filtered_links = filter_links(link_dict, url_dict[website_name]) started on " + website_name + " " + str(
+                                datetime.now()))
                         filtered_links = filter_links(link_dict, url_dict[website_name])
+                        logging.info(
+                            "  filtered_links = filter_links(link_dict, url_dict[website_name]) ended on " + website_name + " " + str(
+                                datetime.now()))
                         for term in terms:
+                            logging.info(
+                                "  titles_with_term = get_titles_with_term(term, filtered_links) started on " + website_name + " " + str(
+                                    datetime.now()))
                             titles_with_term = get_titles_with_term(term, filtered_links)
+                            logging.info(
+                                "  titles_with_term = get_titles_with_term(term, filtered_links) ended on " + website_name + " " + str(
+                                    datetime.now()))
                             for data in titles_with_term:
                                 existing_article = Article.objects.filter(title=data[0]).first()
                                 if not existing_article:
                                     logging.info("Új cím hozzáadása: " + data[0] + " " + website_name + " " + str(datetime.now()))
                                     article = Article(title=data[0], term=term, website=website_name, link=data[1])
                                     article.save()
-                    """""
                 except Exception as inner_error:
                     logging.error(f"Error occurred while processing {website_name}: {inner_error}")
                     continue

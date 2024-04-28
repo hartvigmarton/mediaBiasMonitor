@@ -1,9 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 import urllib.error
+import concurrent.futures
 
 
-def filter_terms(title_dictionary,terms):
+def filter_terms(title_dictionary, terms):
     filtered_links = set()
 
     for key in title_dictionary:
@@ -62,26 +63,31 @@ def format_website(url):
     soup = make_soup(url)
     return soup
 
+
 def get_titles_with_term(term, filtered_links):
     titles_with_term = []
-    for link in filtered_links:
+
+    def process_link(link):
         try:
             formated_page = make_soup(link)
-        except urllib.error.HTTPError:
-            break
+        except requests.exceptions.RequestException as e:
+            print(f"Request error occurred while trying to fetch the URL {link}: {e}")
+            return None
+
         if formated_page is not None:
             page_title = formated_page.find("title")
-            try:
-                if term in page_title.string:
-                    print(link)
-                    print(page_title.string)
-                    pair = (page_title.string, link)
-                    titles_with_term.append(pair)
-            except (AttributeError, TypeError):
-                pass
-        else:
-            break
-    #links[key] = titles_with_term
+            if page_title and term in page_title.get_text():
+                return (page_title.get_text(), link)
+        return None
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        future_to_link = {executor.submit(process_link, link): link for link in filtered_links}
+        for future in concurrent.futures.as_completed(future_to_link):
+            link = future_to_link[future]
+            result = future.result()
+            if result:
+                titles_with_term.append(result)
+
     return titles_with_term
 
 

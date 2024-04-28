@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 import requests
 from .config_handler import load_config
 
-#url = requests.get('https://telex.hu/rss')
 
 def gather_data(website_name,rss):
     data = {}
@@ -24,9 +23,7 @@ def gather_data(website_name,rss):
         pub_date = entry.pubDate.text
         article_data.append(pub_date)
 
-        #pair = (title, link)
         data_list.append(article_data) #make it list with title,link,date
-     #   print(f"Title :{title}\n\nLink: {link}\n\n")
     data[website_name] = data_list
     return data
 
