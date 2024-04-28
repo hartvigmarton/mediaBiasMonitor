@@ -226,3 +226,7 @@ body {
 .graph{
     flex: 1; /* Take up remaining space */
 }
+
+.credits{
+margin-top:100px;
+}
