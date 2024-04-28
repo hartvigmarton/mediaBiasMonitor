@@ -399,8 +399,6 @@ def daily_number_of_articles_graph_per_medium():
         paper_bgcolor="#f0f7ff",
         xaxis_showgrid=True,
         yaxis_showgrid=True,
-        xaxis_gridcolor='black',
-        yaxis_gridcolor='black',
     )
 
     # Convert the figure to HTML
