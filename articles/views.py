@@ -396,7 +396,7 @@ def daily_number_of_articles_graph_per_medium():
         height=600,
         margin=dict(l=50, r=50, b=100, t=100, pad=4),
         plot_bgcolor="#ffffff",
-        paper_bgcolor="#f0f7ff",
+        paper_bgcolor="#ffffff",
         xaxis_showgrid=True,
         yaxis_showgrid=True,
     )
