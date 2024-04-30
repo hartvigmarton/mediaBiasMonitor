@@ -163,31 +163,30 @@ def graph_view2(request):
             end_date = today
 
         if len(submitted_values) > 1:
+            all_article_counts = {}
+            websites = set()
 
-            all_article_counts = []
-            article_count_for_term = {}
-            counter = 0
             for value in submitted_values:
                 articles = Article.objects.filter(term__in=[value], pub_date__range=(start_date, end_date))
-                websites = set([article.website for article in articles])
-                article_counts = [articles.filter(website=website).count() for website in websites]
-                article_count_for_term[counter] = article_counts
-                all_article_counts.extend(article_counts)
-                counter += 1
+                new_websites = set([article.website for article in articles])
+                websites.update(new_websites)
+                article_count_for_term = {}
+                for website in websites:
+                    count = articles.filter(website=website).count()
+                    article_count_for_term[website] = count
+                all_article_counts[value] = article_count_for_term
 
-            fig = go.Figure(layout_title_text = "Kifejezést tartalmazó címek száma újságonként " + str(start_date) + " és " + str(end_date) + " között.")
-            fig.add_trace(go.Bar(
-                x=list(websites),
-                y=article_count_for_term[0],
-                name=submitted_values[0],
-                marker_color='indianred'
-            ))
-            fig.add_trace(go.Bar(
-                x=list(websites),
-                y=article_count_for_term[1],
-                name=submitted_values[1],
-                marker_color='lightsalmon'
-            ))
+            fig = go.Figure(
+                layout_title_text="Kifejezést tartalmazó címek száma újságonként " + str(start_date) + " és " + str(
+                    end_date) + " között.")
+
+            for value in submitted_values:
+                fig.add_trace(go.Bar(
+                    x=list(websites),
+                    y=[all_article_counts[value].get(website, 0) for website in websites],
+                    name=value,
+                    marker_color='indianred' if value == submitted_values[0] else 'lightsalmon'
+                ))
 
             # Here we modify the tickangle of the xaxis, resulting in rotated labels.
             fig.update_layout(barmode='group', xaxis_tickangle=-45)
@@ -210,7 +209,7 @@ def graph_view2(request):
                 all_article_counts.extend(article_counts)
                 counter += 1
 
-            fig = go.Figure(layout_title_text = "Kifejezést tartalmazó címek száma újságonként")
+            fig = go.Figure(layout_title_text = str(submitted_values[0]) +" kifejezést tartalmazó címek száma újságonként")
             fig.add_trace(go.Bar(
                 x=list(websites),
                 y=article_count_for_term[0],
