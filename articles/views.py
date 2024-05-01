@@ -204,7 +204,7 @@ def graph_view2(request):
             article_count_for_term = {}
             counter = 0
             for value in submitted_values:
-                articles = Article.objects.filter(term__in=[value])
+                articles = Article.objects.filter(term__in=[value], pub_date__range=(start_date, end_date))
                 websites = set([article.website for article in articles])
                 article_counts = [articles.filter(website=website).count() for website in websites]
                 article_count_for_term[counter] = article_counts
