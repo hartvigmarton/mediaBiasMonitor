@@ -1,14 +1,21 @@
-const checkboxes = document.querySelectorAll('.expression-checkbox');
+var modal = document.getElementById("myModal");
 
-// Add event listener to each checkbox
-checkboxes.forEach(function(checkbox) {
-    checkbox.addEventListener('change', function() {
-        // Count the number of checkboxes checked
-        const checkedCount = document.querySelectorAll('.expression-checkbox:checked').length;
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
 
-        // If more than two checkboxes are checked, disable further selection
-        if (checkedCount > 2) {
-            this.checked = false;
-        }
-    });
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+};
+
+// When the user clicks on a blog post title, open the modal
+var blogPostTitles = document.getElementsByClassName("blog-post-title");
+Array.from(blogPostTitles).forEach(function(element) {
+    element.onclick = function() {
+        var title = this.getAttribute("data-title");
+        var content = this.getAttribute("data-content");
+        document.getElementById("modal-title").innerHTML = title;
+        document.getElementById("modal-content").innerHTML = content;
+        modal.style.display = "block";
+    };
 });

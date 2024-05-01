@@ -54,16 +54,18 @@ def list_entries(request):
 
 
 def index(request):
-    entries = Blog_Post.objects.all()
+    blog_posts = Blog_Post.objects.all()
     websites, terms = load_config()
     plot_div = daily_number_of_articles_graph_per_medium()
 
-    return render(request, 'index.html', {'entries': entries, 'terms': terms, 'plot_div': plot_div})
+    return render(request, 'index.html', {'blog_posts': blog_posts, 'terms': terms, 'plot_div': plot_div})
 
 def blog_post_detail(request, post_id):
     post = get_object_or_404(Blog_Post, pk=post_id)
-    return render(request, 'blog/post_detail.html', {'post': post})
+    return render(request, 'post_detail.html', {'post': post})
 
+
+#matplotlib graph
 def graph_view(request):
     if request.method == 'GET':
         submitted_values = request.GET.getlist('expression')  # Get a list of submitted expressions
@@ -147,7 +149,7 @@ def graph_view(request):
 
     return render(request, 'graph.html', {'graph_path': 'graphs/' + filename})
 
-
+#plotly graph
 def graph_view2(request):
     if request.method == 'GET':
         submitted_values = request.GET.getlist('expression')  # Get a list of submitted expressions

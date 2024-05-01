@@ -6,6 +6,7 @@ from .views import ArticleList
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path('<int:post_id>/', views.blog_post_detail, name='blog_post_detail'),
     path('graph/', views.graph_view, name='graph_view'),
     path('graph2/', views.graph_view2, name='graph_view2'),
     path('graph3/',views.index_graph,name='index-graph'),

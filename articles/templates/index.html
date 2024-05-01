@@ -51,7 +51,6 @@
                         <input type="submit" value="mehet">
                     </form>
 
-                <script src="{% static 'js/custom.js' %}"></script>
 
 
                             Lista a kifejezést tartalmazó címekről
@@ -75,17 +74,26 @@
                             </form>
 
                 </div>
-
-                <div class="entry-list">
-                    <h2>Elemzések</h2>
-                        <ul>
-                            {% for entry in entries %}
-                                <h3>{{ entry.title }} </h3>
-                                {{ entry.pub_date }}
-                    <!--<p>{{ entry.content }}</p>-->
-                            {% endfor %}
-                        </ul>
+                <div id="myModal" class="modal">
+                  <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3 id="modal-title"></h3>
+                    <p id="modal-content"></p>
+                  </div>
                 </div>
+
+            <div class="blog-post-list">
+                <h2>Elemzések</h2>
+                <ul>
+                    {% for blog_post in blog_posts %}
+                        <h3 class="blog-post-title" data-title="{{ blog_post.title }}" data-content="{{ blog_post.content }}">{{ blog_post.title }}</h3>
+                        <p>{{ blog_post.pub_date }}</p>
+                    {% endfor %}
+                </ul>
+            </div>
+
+
+
             </div>
             <div class="media-names">
                 <a href="https://telex.hu/" class="block" id="telex">Telex</a>
@@ -123,6 +131,7 @@
                 készítette: Hartvig Márton
 
         </div>
+                <script src="{% static 'js/custom.js' %}"></script>
 
     </body>
 </html>
