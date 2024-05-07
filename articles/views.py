@@ -42,9 +42,9 @@ def view_titles(request):
             start_date = week_ago
 
         if end_date_str:
-            end_date = DT.datetime.strptime(end_date_str, '%Y-%m-%d').date()
+            end_date = DT.datetime.strptime(end_date_str, '%Y-%m-%d').date() + DT.timedelta(days=1)
         else:
-            end_date = today
+            end_date = today + DT.timedelta(days=1)
 
         titles = Article.objects.filter(term=submitted_value, pub_date__range=(start_date, end_date))
         return render(request, 'titles.html', {'titles': titles})
@@ -83,7 +83,7 @@ def graph_view(request):
             start_date = week_ago
 
         if end_date == "":
-            end_date = today
+            end_date = today + DT.timedelta(days=1)
 
         if len(submitted_values) > 1:
             all_article_counts = {}
@@ -272,6 +272,7 @@ def daily_number_of_articles_graph():
 
 def daily_number_of_articles_graph_per_medium():
     today = DT.date.today()
+    end_date = today + DT.timedelta(days=1)
     week_ago = today - DT.timedelta(days=7)
     term = "Magyar Péter"
     article_count_for_website = {}
@@ -291,7 +292,7 @@ def daily_number_of_articles_graph_per_medium():
     }
     days = list(dates_between(week_ago, today))
 
-    articles = Article.objects.filter(term=term, pub_date__range=(week_ago, today))
+    articles = Article.objects.filter(term=term, pub_date__range=(week_ago, end_date))
 
     for article in articles:
         if article.website not in article_count_for_website:
