@@ -31,24 +31,27 @@ def print_value(request):
 def view_titles(request):
     if request.method == 'GET':
         submitted_value = request.GET.get('expression', '')
-        start_date = request.GET.getlist('start_date')[0]
-        end_date = request.GET.getlist('end_date')[0]
+        start_date_str = request.GET.get('start_date', '')
+        end_date_str = request.GET.get('end_date', '')
         today = DT.date.today()
         week_ago = today - DT.timedelta(days=7)
 
-        if start_date == "":
+        if start_date_str:
+            start_date = DT.datetime.strptime(start_date_str, '%Y-%m-%d').date()
+        else:
             start_date = week_ago
 
-        if end_date == "":
+        if end_date_str:
+            end_date = DT.datetime.strptime(end_date_str, '%Y-%m-%d').date()
+        else:
             end_date = today
 
-        titles = Article.objects.filter(term=submitted_value,pub_date__range=(start_date, end_date)) # Retrieve all articles from the database
+        titles = Article.objects.filter(term=submitted_value, pub_date__range=(start_date, end_date))
         return render(request, 'titles.html', {'titles': titles})
     return HttpResponse("Form submitted successfully")
 
 
-
-def list_entries(request):
+def list_blog_posts(request):
     entries = Blog_Post.objects.all()
     return render(request, 'entry_list.html', {'entries': entries})
 
@@ -65,92 +68,10 @@ def blog_post_detail(request, post_id):
     return render(request, 'post_detail.html', {'post': post})
 
 
-#matplotlib graph
-def graph_view(request):
-    if request.method == 'GET':
-        submitted_values = request.GET.getlist('expression')  # Get a list of submitted expressions
-
-        if len(submitted_values) > 1:
-            # Create a list to store data for each submitted value
-            data_by_value = []
-
-            all_article_counts = []  # List to store all article counts for finding the absolute maximum
-
-            for value in submitted_values:
-                articles = Article.objects.filter(term__in=[value])
-                websites = set([article.website for article in articles])
-
-                # Count the number of articles for each website
-                article_counts = [articles.filter(website=website).count() for website in websites]
-
-                all_article_counts.extend(article_counts)  # Add article counts to the list
-
-                data_by_value.append((list(websites), article_counts, value))
-
-            # Plot a grouped bar chart
-            fig, ax = plt.subplots()
-            width = 0.35  # Width of the bars
-            offset = 0  # Initial offset for positioning bars
-
-            for x_values, y_values, label in data_by_value:
-                bars = ax.bar([i + offset for i in range(len(x_values))], y_values, width, label=label)
-                offset += width
-
-                # Optionally, add labels to each bar
-                for bar, x_value in zip(bars, x_values):
-                    height = bar.get_height()
-                    ax.annotate('{}'.format(height),
-                                xy=(bar.get_x() + bar.get_width() / 2, height),
-                                xytext=(0, 3),  # 3 points vertical offset
-                                textcoords="offset points",
-                                ha='center', va='bottom')
-
-            ax.set_xlabel('Híroldal')
-            ax.set_ylabel('Hírek száma')
-            ax.set_title('Kifejezést tartalmazó címek száma híroldalanként')
-            ax.set_xticks([i + (width * (len(submitted_values) - 1) / 2) for i in range(len(x_values))])
-            ax.set_xticklabels(x_values, rotation=15, ha='right')  # Rotate x-axis labels for better readability
-
-            # Set y-axis limit to the absolute maximum value
-            ax.set_ylim(0, max(all_article_counts) + 1)  # Add 1 to ensure the maximum value is fully visible
-
-            # Set y-axis tick labels as integers
-            plt.yticks(range(max(all_article_counts) + 1))
-
-            ax.legend()
-
-        else:
-            articles = Article.objects.filter(term__in=submitted_values)
-            websites = set([article.website for article in articles])
-
-            # Count the number of articles for each website
-            article_counts = [articles.filter(website=website).count() for website in websites]
-
-            # Plot a bar chart
-            plt.figure(figsize=(12, 8))  # Adjust the figure size as needed
-
-            plt.bar(list(websites), article_counts)
-            plt.xlabel('Híroldal')
-            plt.ylabel('Hírek száma')
-            plt.title('\"' + submitted_values[0] + '\" kifejezést tartalmazó címek száma híroldalanként')
-            plt.xticks(rotation=15, ha='right')  # Rotate x-axis labels for better readability
-            # Set y-axis tick labels as integers
-            plt.yticks(range(max(article_counts) + 1))
-
-    # Modify filename generation
-    cleaned_values = [value.replace(' ', '_').replace('á', 'a').replace('ö', 'o').replace('ú', 'u') for value in submitted_values]
-    filename = "_".join(cleaned_values) + ".png"
-
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    static_folder = os.path.join(BASE_DIR, 'static')
-    graph_path = os.path.join(static_folder, 'graphs', filename)
-    plt.savefig(graph_path)
-    plt.close()
-
-    return render(request, 'graph.html', {'graph_path': 'graphs/' + filename})
-
 #plotly graph
-def graph_view2(request):
+def graph_view(request):
+    blog_posts = Blog_Post.objects.all()
+    websites, terms = load_config()
     if request.method == 'GET':
         submitted_values = request.GET.getlist('expression')  # Get a list of submitted expressions
         start_date = request.GET.getlist('start_date')[0]
@@ -197,7 +118,7 @@ def graph_view2(request):
             plot_div = plot(fig, output_type='div', include_plotlyjs=False)
 
             # Pass the HTML content to the template
-            return render(request, 'graph2.html', {'plot_div': plot_div})
+            return render(request, 'index.html', {'blog_posts': blog_posts, 'terms': terms, 'plot_div': plot_div})
 
         else:
             all_article_counts = []
@@ -224,7 +145,8 @@ def graph_view2(request):
             plot_div = plot(fig, output_type='div', include_plotlyjs=False)
 
             # Pass the HTML content to the template
-            return render(request, 'graph2.html', {'plot_div': plot_div})
+            return render(request, 'index.html', {'blog_posts': blog_posts, 'terms': terms, 'plot_div': plot_div})
+
 
 def index_graph(request):
     today = DT.date.today()
@@ -285,7 +207,7 @@ def index_graph(request):
     # Convert the figure to HTML
     plot_div = plot(fig, output_type='div', include_plotlyjs=False)
 
-    return render(request, 'graph2.html', {'plot_div': plot_div})
+    return render(request, 'graph.html', {'plot_div': plot_div})
 def dates_between(start_date, end_date):
     delta = DT.timedelta(days=1)
     current_date = start_date

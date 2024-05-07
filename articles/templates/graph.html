@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Articles</title>
-     {% load static %}
+    <title>Graph View</title>
+    <!-- Include Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
-    <h1>Graph</h1>
-    <<img src="{% static graph_path %}" alt="Your Graph">
-
-
+    <!-- Render the plot_div -->
+    {{ plot_div|safe }}
 </body>
 </html>

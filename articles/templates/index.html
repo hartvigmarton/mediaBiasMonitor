@@ -28,7 +28,7 @@
 
                 <div class="search-field">
                     <h2>Kereső</h2>
-                    <form method="get" action="{% url 'graph_view2' %}">
+                    <form method="get" action="{% url 'graph_view' %}">
                         {% csrf_token %}
                         <ul class="expression-list">
                             <select name="expression" id="expression">
@@ -107,28 +107,14 @@
                 <a href="https://hvg.hu/" class="block" id="hvg">HVG</a>
             </div>
 
-            <!--
-            <table class = "media-names">
-
-                <tr>
-                    <td><a href="https://telex.hu/" id="telex">Telex</a><br></td>
-                    <td><a href="https://444.hu/" id="negy44">444</a></td>
-                    <td><a href="https://origo.hu/" id="origo">Origo</a></td>
-                    <td><a href="https://index.hu/" id="index">Index</a></td>
-                    <td><a href="https://hang.hu/" id="magyar-hang">Magyar Hang</a></td>
-                    <td><a href="https://magyarnemzet.hu/" id="magyar-nemzet">Magyar Nemzet</a></td>
-                    <td><a href="https://ripost.hu/" id="ripost">Ripost</a></td>
-                    <td><a href="https://pestisracok.hu/" id="pestiSracok">Pestisrácok</a></td>
-                    <td><a href="https://hvg.hu/" id="hvg">HVG</a></td>
-                </tr>
-            </table>-->
             <div class="graph">
-                {% include 'graph2.html' %}
+                {% include 'graph.html' %}
             </div>
         </div>
 
         <div class="credits">
-                készítette: Hartvig Márton
+                készítette:
+            <a href="mailto:hartvigmarton@gmail.com">Hartvig Márton</a>
 
         </div>
                 <script src="{% static 'js/custom.js' %}"></script>
