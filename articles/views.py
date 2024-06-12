@@ -20,12 +20,6 @@ import plotly.express as px
 from django.shortcuts import render, get_object_or_404
 
 
-def print_value(request):
-    if request.method == 'POST':
-        submitted_value = request.POST.get('expression', '')
-        # You can print the value or perform any other action here
-        print(submitted_value)
-    return HttpResponse(submitted_value)
 
 
 def view_titles(request):
@@ -59,7 +53,7 @@ def list_blog_posts(request):
 def index(request):
     blog_posts = Blog_Post.objects.all()
     websites, terms = load_config()
-    plot_div = daily_number_of_articles_graph_per_medium()
+    plot_div = daily_number_of_articles_graph_per_medium(request)
 
     return render(request, 'index.html', {'blog_posts': blog_posts, 'terms': terms, 'plot_div': plot_div})
 
@@ -74,15 +68,19 @@ def graph_view(request):
     websites, terms = load_config()
     if request.method == 'GET':
         submitted_values = request.GET.getlist('expression')  # Get a list of submitted expressions
-        start_date = request.GET.getlist('start_date')[0]
-        end_date = request.GET.getlist('end_date')[0]
+        start_date_str = request.GET.get('start_date', '')
+        end_date_str = request.GET.get('end_date', '')
         today = DT.date.today()
         week_ago = today - DT.timedelta(days=7)
 
-        if start_date == "":
+        if start_date_str:
+            start_date = DT.datetime.strptime(start_date_str, '%Y-%m-%d').date()
+        else:
             start_date = week_ago
 
-        if end_date == "":
+        if end_date_str:
+            end_date = DT.datetime.strptime(end_date_str, '%Y-%m-%d').date() + DT.timedelta(days=1)
+        else:
             end_date = today + DT.timedelta(days=1)
 
         if len(submitted_values) > 1:
@@ -270,7 +268,7 @@ def daily_number_of_articles_graph():
 
     return plot_div
 
-def daily_number_of_articles_graph_per_medium():
+def daily_number_of_articles_graph_per_medium(request):
     today = DT.date.today()
     end_date = today + DT.timedelta(days=1)
     week_ago = today - DT.timedelta(days=7)

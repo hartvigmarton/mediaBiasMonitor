@@ -1,285 +1,288 @@
-nav {
-    background-color: white;
-    overflow: hidden;
+
+@media only screen and (min-width: 768px) {
+    nav {
+        background-color: white;
+        overflow: hidden;
+    }
+
+    nav a {
+        float: left;
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: bold;
+        font-family: 'Roboto Mono', monospace;
+    }
+
+    nav a:hover {
+        background-color: white;
+        color: black;
+    }
+
+    .container {
+        display: flex; /* Use flexbox */
+        justify-content: center; /* Center the content horizontally */
+        margin: 0px; /* Add 100px margin to all sides */
+    }
+
+    /* Body styles */
+    body {
+        background-color: white;
+        font-family: 'Roboto Mono', monospace;
+        margin-left: 50px;
+        margin-right: 50px;
+        padding: 0;
+    }
+
+    /* Main content styles */
+    .main-content {
+        padding: 0px;
+    }
+
+    .blog-post-list {
+        float: left;
+        width: calc(50% - 25px); /* 50% of the sidebar width minus some padding */
+        padding-left: 0px; /* Add some padding between entry list and search field */
+    }
+
+    .main-content header {
+        font-size: 70px;
+    }
+
+    /* Form styles */
+    .expression-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .expression-list li {
+        margin-bottom: 10px;
+    }
+
+    .expression-list input[type="radio"] {
+        margin-right: 15px;
+    }
+
+    /* Styles for the sidebar */
+    .sidebar {
+        float: left;
+        width: 500px; /* Adjust width as needed */
+        text-align: justify;
+        text-justify: inter-word;
+    }
+
+    .search-field {
+        float: left;
+        width: calc(50% - 25px); /* 50% of the sidebar width minus some padding */
+        padding-right: 0px; /* Add some padding between search field and entry list */
+        text-align: justify;
+        text-justify: inter-word;
+    }
+    /* Styles for the main content */
+    .content {
+        margin-left: 420px; /* Adjust margin to accommodate the sidebar width */
+    }
+
+    .media-names {
+        text-decoration: bold; /* Remove underline */
+        color: inherit; /* Inherit the color from the parent element */
+        float: center; /* Float the block to the right */
+        width: 100px; /* Adjust the width as needed */
+        margin-left: 50px;
+        margin-right: 50px;
+        margin-top: 30px; /* Add some margin to separate from other content */
+        flex: 1; /* Take up remaining space */
+        text-align: center; /* Center the content horizontally */
+    }
+
+    .block {
+        width: calc(100% - 10px); /* Set the width of each block */
+        height: 30px; /* Set the height of each block */
+        line-height: 40px; /* Center the text vertically */
+        background-color: #333; /* Set the background color for blocks */
+        color: white; /* Set the text color */
+        display: inline-block; /* Display blocks inline */
+        text-align: left; /* Center the text horizontally */
+        font-family: 'Roboto Mono', monospace; /* Set the font family */
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .block::after {
+        content: ""; /* Add content */
+        display: inline-block; /* Display as inline-block */
+        width: calc(50% - 20ch); /* Set width to fill remaining space */
+    }
+
+    .media-names td {
+        display: block;
+        text-align: left; /* Center the content horizontally */
+        text decoration: bold;
+    }
+
+    #telex {
+        display: inline-block;
+        color: black;
+        background-color:rgb(0,255,187);
+    }
+
+    #negy44 {
+        color: black;
+        background-color:rgb(255,255,115);
+    }
+
+    #origo {
+        color: white;
+        background-color:rgb(5,25,210);
+    }
+
+    #index {
+        color: black;
+        background-color:rgb(255,153,0);
+    }
+
+    #magyar-hang {
+        color: black;
+        background-color:rgb(221,76,79);
+    }
+
+    #nepszava {
+        color: black;
+        background-color:rgb(21,126,252);
+    }
+
+    #mandiner {
+        color: black;
+        background-color:rgb(176,133,32);
+    }
+
+    #magyar-nemzet {
+        color: white;
+        background-color:rgb(0,0,0);
+    }
+
+    #ripost {
+        color: white;
+        background-color:rgb(235,0,0);
+    }
+
+    #pestiSracok {
+        color: black;
+        background-color:rgb(140,140,140);
+    }
+
+    #nol {
+        color: white;
+        background-color:rgb(76,4,54);
+    }
+
+    #hvg {
+        color: white;
+        background-color:rgb(226,89,0);
+    }
+
+    /* Dropdown menu styles */
+    .expression-list select {
+        background-color: #fff;
+        color: #333;
+        border: 1px solid #ccc;
+        padding: 8px;
+        font-size: 16px;
+        font-family: 'Roboto Mono', monospace;
+        width: 100%;
+        box-sizing: border-box;
+        border-radius: 4px;
+    }
+
+    .expression-list select:hover {
+        border-color: 'white';
+    }
+
+    .expression-list select:focus {
+        outline: none;
+        border-color: 'white';
+    }
+
+    /* Adjustments for the dropdown arrow */
+    .expression-list select::after {
+        content: '\25BC'; /* Unicode character for down arrow */
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        pointer-events: none; /* Ensure the arrow does not interfere with clicking on the select */
+    }
+
+    /* Hover effect for the dropdown */
+    .expression-list select:hover::after {
+        color: 'white';
+    }
+
+    .expression-list input[type="submit"] {
+        background-color: #4CAF50; /* Green */
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        font-family: 'Roboto Mono', monospace;
+    }
+
+    .expression-list input[type="submit"]:hover {
+        background-color: #45a049; /* Darker green */
+    }
+
+    /* Adjustments for the checkbox */
+    .expression-list input[type="checkbox"] {
+        margin-right: 5px;
+    }
+
+    /* Hover effect for the checkbox */
+    .expression-list input[type="checkbox"]:hover {
+        border-color: 'white';
+    }
+
+    .graph {
+        flex: 1; /* Take up remaining space */
+    }
+
+    .credits {
+        margin-top: 50px;
+        margin-left: 0px;
+    }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+      }
+
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
 }
-
-nav a {
-    float: left;
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: bold;
-    font-family: 'Roboto Mono', monospace;
-}
-
-nav a:hover {
-    background-color: white;
-    color: black;
-}
-
-.container {
-    display: flex; /* Use flexbox */
-    justify-content: center; /* Center the content horizontally */
-    margin: 0px; /* Add 100px margin to all sides */
-}
-
-/* Body styles */
-body {
-    background-color: white;
-    font-family: 'Roboto Mono', monospace;
-    margin-left: 50px;
-    margin-right: 50px;
-    padding: 0;
-}
-
-/* Main content styles */
-.main-content {
-    padding: 0px;
-}
-
-.blog-post-list {
-    float: left;
-    width: calc(50% - 25px); /* 50% of the sidebar width minus some padding */
-    padding-left: 0px; /* Add some padding between entry list and search field */
-}
-
-.main-content header {
-    font-size: 70px;
-}
-
-/* Form styles */
-.expression-list {
-    list-style-type: none;
-    padding: 0;
-}
-
-.expression-list li {
-    margin-bottom: 10px;
-}
-
-.expression-list input[type="radio"] {
-    margin-right: 15px;
-}
-
-/* Styles for the sidebar */
-.sidebar {
-    float: left;
-    width: 500px; /* Adjust width as needed */
-    text-align: justify;
-    text-justify: inter-word;
-}
-
-.search-field {
-    float: left;
-    width: calc(50% - 25px); /* 50% of the sidebar width minus some padding */
-    padding-right: 0px; /* Add some padding between search field and entry list */
-    text-align: justify;
-    text-justify: inter-word;
-}
-/* Styles for the main content */
-.content {
-    margin-left: 420px; /* Adjust margin to accommodate the sidebar width */
-}
-
-.media-names {
-    text-decoration: bold; /* Remove underline */
-    color: inherit; /* Inherit the color from the parent element */
-    float: center; /* Float the block to the right */
-    width: 100px; /* Adjust the width as needed */
-    margin-left: 50px;
-    margin-right: 50px;
-    margin-top: 30px; /* Add some margin to separate from other content */
-    flex: 1; /* Take up remaining space */
-    text-align: center; /* Center the content horizontally */
-}
-
-.block {
-    width: calc(100% - 10px); /* Set the width of each block */
-    height: 30px; /* Set the height of each block */
-    line-height: 40px; /* Center the text vertically */
-    background-color: #333; /* Set the background color for blocks */
-    color: white; /* Set the text color */
-    display: inline-block; /* Display blocks inline */
-    text-align: left; /* Center the text horizontally */
-    font-family: 'Roboto Mono', monospace; /* Set the font family */
-    font-weight: bold;
-    text-decoration: none;
-}
-
-.block::after {
-    content: ""; /* Add content */
-    display: inline-block; /* Display as inline-block */
-    width: calc(50% - 20ch); /* Set width to fill remaining space */
-}
-
-.media-names td {
-    display: block;
-    text-align: left; /* Center the content horizontally */
-    text decoration: bold;
-}
-
-#telex {
-    display: inline-block;
-    color: black;
-    background-color:rgb(0,255,187);
-}
-
-#negy44 {
-    color: black;
-    background-color:rgb(255,255,115);
-}
-
-#origo {
-    color: white;
-    background-color:rgb(5,25,210);
-}
-
-#index {
-    color: black;
-    background-color:rgb(255,153,0);
-}
-
-#magyar-hang {
-    color: black;
-    background-color:rgb(221,76,79);
-}
-
-#nepszava {
-    color: black;
-    background-color:rgb(21,126,252);
-}
-
-#mandiner {
-    color: black;
-    background-color:rgb(176,133,32);
-}
-
-#magyar-nemzet {
-    color: white;
-    background-color:rgb(0,0,0);
-}
-
-#ripost {
-    color: white;
-    background-color:rgb(235,0,0);
-}
-
-#pestiSracok {
-    color: black;
-    background-color:rgb(140,140,140);
-}
-
-#nol {
-    color: white;
-    background-color:rgb(76,4,54);
-}
-
-#hvg {
-    color: white;
-    background-color:rgb(226,89,0);
-}
-
-/* Dropdown menu styles */
-.expression-list select {
-    background-color: #fff;
-    color: #333;
-    border: 1px solid #ccc;
-    padding: 8px;
-    font-size: 16px;
-    font-family: 'Roboto Mono', monospace;
-    width: 100%;
-    box-sizing: border-box;
-    border-radius: 4px;
-}
-
-.expression-list select:hover {
-    border-color: 'white';
-}
-
-.expression-list select:focus {
-    outline: none;
-    border-color: 'white';
-}
-
-/* Adjustments for the dropdown arrow */
-.expression-list select::after {
-    content: '\25BC'; /* Unicode character for down arrow */
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-    pointer-events: none; /* Ensure the arrow does not interfere with clicking on the select */
-}
-
-/* Hover effect for the dropdown */
-.expression-list select:hover::after {
-    color: 'white';
-}
-
-.expression-list input[type="submit"] {
-    background-color: #4CAF50; /* Green */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    font-family: 'Roboto Mono', monospace;
-}
-
-.expression-list input[type="submit"]:hover {
-    background-color: #45a049; /* Darker green */
-}
-
-/* Adjustments for the checkbox */
-.expression-list input[type="checkbox"] {
-    margin-right: 5px;
-}
-
-/* Hover effect for the checkbox */
-.expression-list input[type="checkbox"]:hover {
-    border-color: 'white';
-}
-
-.graph {
-    flex: 1; /* Take up remaining space */
-}
-
-.credits {
-    margin-top: 50px;
-    margin-left: 0px;
-}
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-  }
-
-  .modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-  }
-
-  .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-  }
-
-  .close:hover,
-  .close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-  }

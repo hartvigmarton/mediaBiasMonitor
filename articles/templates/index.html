@@ -29,7 +29,6 @@
                 <div class="search-field">
                     <h2>Kereső</h2>
                     <form method="get" action="{% url 'graph_view' %}">
-                        {% csrf_token %}
                         <ul class="expression-list">
                             <select name="expression" id="expression">
                                 {% for term in terms %}
