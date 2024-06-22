@@ -40,8 +40,9 @@ def view_titles(request):
         else:
             end_date = today + DT.timedelta(days=1)
 
+        plot_div = daily_number_of_articles_graph_per_medium(submitted_value, start_date, end_date)
         titles = Article.objects.filter(term=submitted_value, pub_date__range=(start_date, end_date))
-        return render(request, 'titles.html', {'titles': titles})
+        return render(request, 'titles.html', {'titles': titles, 'plot_div': plot_div})
     return HttpResponse("Form submitted successfully")
 
 
@@ -51,9 +52,12 @@ def list_blog_posts(request):
 
 
 def index(request):
+    today = DT.date.today()
+    end_date = today + DT.timedelta(days=1)
+    week_ago = today - DT.timedelta(days=7)
     blog_posts = Blog_Post.objects.all()
     websites, terms = load_config()
-    plot_div = daily_number_of_articles_graph_per_medium(request)
+    plot_div = daily_number_of_articles_graph_per_medium("Magyar Péter",start_date= week_ago,end_date= end_date)
 
     return render(request, 'index.html', {'blog_posts': blog_posts, 'terms': terms, 'plot_div': plot_div})
 
@@ -268,12 +272,9 @@ def daily_number_of_articles_graph():
 
     return plot_div
 
-def daily_number_of_articles_graph_per_medium(request):
-    today = DT.date.today()
-    end_date = today + DT.timedelta(days=1)
-    week_ago = today - DT.timedelta(days=7)
-    term = "Magyar Péter"
+def daily_number_of_articles_graph_per_medium(term, start_date, end_date):
     article_count_for_website = {}
+    #TODO pass this data in a config file
     website_color_dictionary = {
         "Telex": "rgb(0,255,187)",
         "444": "rgb(255,255,115)",
@@ -288,9 +289,9 @@ def daily_number_of_articles_graph_per_medium(request):
         "NOL": "rgb(76,4,54)",
         "HVG": "rgb(226,89,0)"
     }
-    days = list(dates_between(week_ago, today))
+    days = list(dates_between(start_date, end_date))
 
-    articles = Article.objects.filter(term=term, pub_date__range=(week_ago, end_date))
+    articles = Article.objects.filter(term=term, pub_date__range=(start_date, end_date))
 
     for article in articles:
         if article.website not in article_count_for_website:
@@ -323,7 +324,6 @@ def daily_number_of_articles_graph_per_medium(request):
         yaxis_showgrid=True,
     )
 
-    # Convert the figure to HTML
     plot_div = fig.to_html()
 
     return plot_div

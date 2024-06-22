@@ -362,4 +362,8 @@
         text-decoration: none;
         cursor: pointer;
       }
+
+      .blog_post {
+        text-align: justify;
+      }
 }
