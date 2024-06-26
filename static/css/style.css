@@ -1,3 +1,7 @@
+body {
+        background-color: white;
+        font-family: 'Roboto Mono', monospace;
+}
 
 .container {
         width: 100%; /* Adjust width as needed */
@@ -365,5 +369,6 @@
 
       .blog_post {
         text-align: justify;
+        text-align: center;
       }
 }
