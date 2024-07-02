@@ -18,7 +18,9 @@ from plotly.offline import plot
 import datetime as DT
 import plotly.express as px
 from django.shortcuts import render, get_object_or_404
-
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 
 
 
@@ -333,4 +335,16 @@ class ArticleList(APIView):
         articles = Article.objects.all()
         serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
+
+
+@csrf_exempt
+def upload_image(request):
+    if request.method == 'POST':
+        file = request.FILES['file']
+        file_path = os.path.join(settings.MEDIA_ROOT, file.name)
+        with open(file_path, 'wb+') as destination:
+            for chunk in file.chunks():
+                destination.write(chunk)
+        return JsonResponse({'location': f'{settings.MEDIA_URL}{file.name}'})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 

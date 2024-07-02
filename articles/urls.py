@@ -10,5 +10,6 @@ urlpatterns = [
     path('blog/<int:post_id>/', views.blog_post_detail, name='blog_post_detail'),
     path('entry_list/', views.list_blog_posts, name='list_blog_posts'),
     path('titles/', views.view_titles, name='view_titles'),
+    path('upload/', views.upload_image, name='upload_image'),
 
 ]
