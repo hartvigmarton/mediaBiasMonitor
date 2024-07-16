@@ -210,7 +210,6 @@ def dates_between(start_date, end_date):
     current_date = start_date
     end_date = end_date - delta
     while current_date <= end_date:
-        print("adding",current_date)
         yield current_date
         current_date += delta
 def daily_number_of_articles_graph():
@@ -287,7 +286,6 @@ def daily_number_of_articles_graph_per_medium(term, start_date, end_date):
         "HVG": "rgb(226,89,0)"
     }
     days = list(dates_between(start_date, end_date))
-    print(days)
     articles = Article.objects.filter(term=term, pub_date__range=(start_date, end_date))
 
     for article in articles:
