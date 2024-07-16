@@ -1,22 +1,15 @@
 from django.http import HttpResponse
-from django.shortcuts import render
 from .models import Article,Blog_Post  # Import your model for data storage
-import threading
-import time
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import ArticleSerializer
-from .rss_scraper import gather_data
-#from .entity_manager import update_database
 import matplotlib
 matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 import os
 from .config_handler import load_config
 import plotly.graph_objects as go
 from plotly.offline import plot
 import datetime as DT
-import plotly.express as px
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -215,7 +208,9 @@ def index_graph(request):
 def dates_between(start_date, end_date):
     delta = DT.timedelta(days=1)
     current_date = start_date
+    end_date = end_date - delta
     while current_date <= end_date:
+        print("adding",current_date)
         yield current_date
         current_date += delta
 def daily_number_of_articles_graph():
@@ -292,7 +287,7 @@ def daily_number_of_articles_graph_per_medium(term, start_date, end_date):
         "HVG": "rgb(226,89,0)"
     }
     days = list(dates_between(start_date, end_date))
-
+    print(days)
     articles = Article.objects.filter(term=term, pub_date__range=(start_date, end_date))
 
     for article in articles:
