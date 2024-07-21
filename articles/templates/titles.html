@@ -21,6 +21,7 @@
 
     {{ plot_div|safe }}
 
+    <p>Összesen: {{ titles|length }}</p>
     <ul>
         {% for title in titles %}
             <li>
@@ -33,7 +34,7 @@
             </li>
         {% endfor %}
     </ul>
-        <p>Total number of articles: {{ titles|length }}</p>
+
 
 
 </body>
