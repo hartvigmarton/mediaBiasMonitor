@@ -81,15 +81,15 @@
                   </div>
                 </div>
 
-            <div class="blog-post-list">
-                <h2>Elemzések</h2>
-                <ul>
-                    {% for blog_post in blog_posts %}
-                        <h3 class="blog-post-title" data-title="{{ blog_post.title }}" data-content="{{ blog_post.content }}">{{ blog_post.title }}</h3>
-                        <p>{{ blog_post.pub_date }}</p>
-                    {% endfor %}
-                </ul>
-            </div>
+              <div class="blog-post-list">
+    <h2>Elemzések</h2>
+    <ul>
+        {% for blog_post in blog_posts|dictsortreversed:"pub_date"|slice:":2" %}
+            <h3 class="blog-post-title" data-title="{{ blog_post.title }}" data-content="{{ blog_post.content }}">{{ blog_post.title }}</h3>
+            <p>{{ blog_post.pub_date }}</p>
+        {% endfor %}
+    </ul>
+</div>
 
 
 

@@ -97,7 +97,7 @@ def graph_view(request):
                 all_article_counts[value] = article_count_for_term
 
             fig = go.Figure(
-                layout_title_text="Kifejezést tartalmazó címek száma újságonként " + str(start_date) + " és " + str(
+                layout_title_text= str(start_date) + " és " + str(
                     end_date) + " között.")
 
             for value in submitted_values:
