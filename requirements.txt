@@ -1,6 +1,8 @@
 beautifulsoup4==4.11.1
 Django==4.2.6
+django_ckeditor==6.7.1
 djangorestframework==3.14.0
 matplotlib==3.5.2
 plotly==5.9.0
-Requests==2.31.0
+python-dotenv==1.0.1
+Requests==2.32.3
