@@ -12,7 +12,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from datetime import timedelta
 from pathlib import Path
-
+import os
+from dotenv import load_dotenv
+# Load environment variables from .env file
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,14 +24,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ""
+SECRET_KEY = os.getenv("SECRET_KEY", default="")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", default="")
 
-ALLOWED_HOSTS = ["media-monitor.hu", "www.media-monitor.hu", "161.35.25.184"]
-
-
+ALLOWED_HOSTS = ["media-monitor.hu", "www.media-monitor.hu", "161.35.25.184", "127.0.0.1"]
+CSRF_TRUSTED_ORIGINS = ['https://*.media-monitor.hu', 'https://*.127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "tinymce"
 ]
 
 MIDDLEWARE = [
@@ -128,10 +131,32 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Example, use your broker URL
-CELERY_BEAT_SCHEDULE = {
-    'gather-data-every-hour': {
-        'task': 'your_app.tasks.gather_data_task',
-        'schedule': timedelta(hours=1),  # Adjust as needed
-    },
+TINYMCE_JS_URL = os.getenv("TINYMCE_JS_URL", default="")
+TINYMCE_COMPRESSOR = False
+SECURE_REFERRER_POLICY = os.getenv("SECURE_REFERRER_POLICY", default="")
+TINYMCE_DEFAULT_CONFIG = {
+    'cleanup_on_startup': True,
+    'custom_undo_redo_levels': 20,
+    'selector': 'textarea',
+    'theme': 'silver',
+    'plugins': '''
+            textcolor save link image media preview codesample contextmenu
+            table code lists fullscreen  insertdatetime  nonbreaking
+            contextmenu directionality searchreplace wordcount visualblocks
+            visualchars code fullscreen autolink lists  charmap print  hr
+            anchor pagebreak
+            ''',
+    'toolbar1': '''
+            fullscreen preview bold italic underline | fontselect,
+            fontsizeselect  | forecolor backcolor | alignleft alignright |
+            aligncenter alignjustify | indent outdent | bullist numlist table |
+            | link image media | codesample |
+            ''',
+    'toolbar2': '''
+            visualblocks visualchars |
+            charmap hr pagebreak nonbreaking anchor |  code |
+            ''',
+    'contextmenu': 'formats | link image',
+    'menubar': True,
+    'statusbar': True,
 }
