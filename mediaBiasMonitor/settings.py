@@ -25,9 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY", default="")
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", default="")
+DEBUG = os.getenv("DEBUG", default="") == "True"
 
 ALLOWED_HOSTS = ["media-monitor.hu", "www.media-monitor.hu", "161.35.25.184", "127.0.0.1"]
 CSRF_TRUSTED_ORIGINS = ['https://*.media-monitor.hu', 'https://*.127.0.0.1']
