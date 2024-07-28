@@ -89,11 +89,13 @@ body {
     nav a {
         float: left;
         display: block;
-        color: white;
+        color: black;
         text-align: center;
         padding: 14px 16px;
         text-decoration: bold;
         font-family: 'Roboto Mono', monospace;
+        text decoration: bold;
+
     }
 
     nav a:hover {
