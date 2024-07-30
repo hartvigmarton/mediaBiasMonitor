@@ -102,6 +102,10 @@ body {
         background-color: white;
         color: black;
     }
+    .no-style-link {
+    text-decoration: none;
+    color: inherit; /* This will ensure the link inherits the color of its parent */
+}
 
     .container {
         display: flex; /* Use flexbox */
