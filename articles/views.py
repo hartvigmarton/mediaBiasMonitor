@@ -42,8 +42,8 @@ def view_titles(request):
 
 
 def list_blog_posts(request):
-    entries = Blog_Post.objects.all()
-    return render(request, 'entry_list.html', {'entries': entries})
+    posts = Blog_Post.objects.all()
+    return render(request, 'post_list.html', {'posts': posts})
 
 
 def index(request):
