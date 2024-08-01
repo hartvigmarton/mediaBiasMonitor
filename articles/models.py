@@ -3,6 +3,8 @@ from django.db import models
 from django.utils import timezone
 from ckeditor_uploader.fields import RichTextUploadingField
 from tinymce.models import HTMLField
+from django.utils.text import slugify
+from django.db.models.signals import pre_save
 
 
 class Article(models.Model):
@@ -27,7 +29,13 @@ class Meta:
 
 class Blog_Post(models.Model):
     title = models.CharField(max_length=200)
-   #content = models.TextField(max_length=100000)
+    slug = models.SlugField(max_length=200, unique=True)
     content = HTMLField()
-    #content = RichTextUploadingField()
     pub_date = models.DateTimeField(auto_now_add=True)
+def pre_save_blog_post_receiver(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug = slugify(instance.title)
+
+pre_save.connect(pre_save_blog_post_receiver, sender=Blog_Post)
+
+

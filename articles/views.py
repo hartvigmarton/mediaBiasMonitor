@@ -56,8 +56,8 @@ def index(request):
 
     return render(request, 'index.html', {'blog_posts': blog_posts, 'terms': terms, 'plot_div': plot_div})
 
-def blog_post_detail(request, post_id):
-    post = get_object_or_404(Blog_Post, pk=post_id)
+def blog_post_detail(request, slug):
+    post = get_object_or_404(Blog_Post, slug=slug)
     return render(request, 'post_detail.html', {'post': post})
 
 
