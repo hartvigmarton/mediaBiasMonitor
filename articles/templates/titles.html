@@ -1,23 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Cikk címek</title>
-      {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-4oF82EXeW4tNRGp+DPAo2FCfY7ZyGvqU76g+YXTNvd6I20rR0mj8hCaekivz5qC4Ouee2fMUe8LL2v1wRGocGg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.png' %}" >
+{% extends "base.html" %}
+{% block title %}
+Cikk címek
+{% endblock %}
+{% block extra_head %}
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-
-</head>
-<body>
-<header>
-        <h1>
-        <a href="{% url 'index' %}" class="no-style-link">média monitor</a>
-            </h1>
-        <!-- Add other header elements here -->
-    </header>
-
+{% endblock %}
+{% block content %}
     <h1>Címek listája</h1>
 
     {{ plot_div|safe }}
@@ -35,8 +23,4 @@
             </li>
         {% endfor %}
     </ul>
-
-
-
-</body>
-</html>
+{% endblock %}

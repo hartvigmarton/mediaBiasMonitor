@@ -18,13 +18,30 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
+from .sitemaps import BlogPostSitemap, StaticViewSitemap
+from django.contrib.sitemaps.views import sitemap
+from articles import views
+
+
+sitemaps = {
+    "static": StaticViewSitemap,
+    "blog_posts": BlogPostSitemap,
+}
 
 urlpatterns = [
+    path("", views.index, name="index"),
+    path('post_list/', views.list_blog_posts, name='list_blog_posts'),
     path("articles/", include("articles.urls")),
     path("admin/", admin.site.urls),
     path('', include('articles.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path(r'^tinymce/', include('tinymce.urls')),
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": sitemaps},
+        name="django.contrib.sitemaps.views.sitemap",
+    ),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.DEBUG:

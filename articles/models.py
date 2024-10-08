@@ -5,6 +5,7 @@ from ckeditor_uploader.fields import RichTextUploadingField
 from tinymce.models import HTMLField
 from django.utils.text import slugify
 from django.db.models.signals import pre_save
+from django.urls import reverse
 
 
 class Article(models.Model):
@@ -32,10 +33,15 @@ class Blog_Post(models.Model):
     slug = models.SlugField(max_length=200, unique=True)
     content = HTMLField()
     pub_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("blog_post_detail", args=[str(self.slug)])
 def pre_save_blog_post_receiver(sender, instance, *args, **kwargs):
     if not instance.slug:
         instance.slug = slugify(instance.title)
 
 pre_save.connect(pre_save_blog_post_receiver, sender=Blog_Post)
-
 

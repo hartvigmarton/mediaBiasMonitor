@@ -1,19 +1,15 @@
 from django.http import HttpResponse
-from .models import Article,Blog_Post  # Import your model for data storage
+from .models import Article, Blog_Post  # Import your model for data storage
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import ArticleSerializer
 import matplotlib
 matplotlib.use('Agg')
-import os
 from .config_handler import load_config
 import plotly.graph_objects as go
 from plotly.offline import plot
 import datetime as DT
 from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.conf import settings
 
 
 
@@ -145,66 +141,6 @@ def graph_view(request):
             return render(request, 'index.html', {'blog_posts': blog_posts, 'terms': terms, 'plot_div': plot_div})
 
 
-def index_graph(request):
-    today = DT.date.today()
-    week_ago = today - DT.timedelta(days=7)
-    terms = ["Szentkirályi","Karácsony","Vitézy"]
-    all_article_counts = []
-    article_count_for_term = {}
-    counter = 0
-    websites = []
-    set_size = 0
-    for value in terms:
-        articles = Article.objects.filter(term__in=[value], pub_date__range=(week_ago, today))
-        if len(set([article.website for article in articles])) > set_size:
-            websites = set([article.website for article in articles])
-            set_size = len(set([article.website for article in articles]))
-        article_counts = [articles.filter(website=website).count() for website in websites]
-        print(websites)
-        print(article_counts)
-        article_count_for_term[value] = article_counts
-        all_article_counts.extend(article_counts)
-        counter += 1
-
-    fig = go.Figure( layout_title_text = "Kifejezést tartalmazó címek száma újságonként")
-
-    fig.add_trace(go.Bar(
-        x=list(websites),
-        y=article_count_for_term["Szentkirályi"],
-        name="Szentkirályi",
-        marker_color='orange'
-    ))
-    fig.add_trace(go.Bar(
-        x=list(websites),
-        y=article_count_for_term["Karácsony"],
-        name="Karácsony",
-        marker_color='rgb(169, 213, 34)'
-    ))
-    fig.add_trace(go.Bar(
-        x=list(websites),
-        y=article_count_for_term["Vitézy"],
-        name="Vitézy",
-        marker_color='#A0CDFF'
-    ))
-
-    # Here we modify the tickangle of the xaxis, resulting in rotated labels.
-    fig.update_layout(barmode='group', xaxis_tickangle=-45)
-    fig.update_layout(
-        autosize=False,
-        width=500,
-        height=500,
-        margin=dict(
-            l=50,
-            r=50,
-            b=100,
-            t=100,
-            pad=4
-        ),
-        paper_bgcolor="#f0f7ff",)
-    # Convert the figure to HTML
-    plot_div = plot(fig, output_type='div', include_plotlyjs=False)
-
-    return render(request, 'graph.html', {'plot_div': plot_div})
 def dates_between(start_date, end_date):
     delta = DT.timedelta(days=1)
     current_date = start_date
@@ -328,16 +264,3 @@ class ArticleList(APIView):
         articles = Article.objects.all()
         serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
-
-
-@csrf_exempt
-def upload_image(request):
-    if request.method == 'POST':
-        file = request.FILES['file']
-        file_path = os.path.join(settings.MEDIA_ROOT, file.name)
-        with open(file_path, 'wb+') as destination:
-            for chunk in file.chunks():
-                destination.write(chunk)
-        return JsonResponse({'location': f'{settings.MEDIA_URL}{file.name}'})
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
