@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from .models import Article, Blog_Post  # Import your model for data storage
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -11,30 +10,29 @@ from plotly.offline import plot
 import datetime as DT
 from django.shortcuts import render, get_object_or_404
 
+today = DT.date.today()
+week_ago = today - DT.timedelta(days=7)
+websites, terms = load_config()
 
 
 def view_titles(request):
-    if request.method == 'GET':
-        submitted_value = request.GET.get('expression', '')
-        start_date_str = request.GET.get('start_date', '')
-        end_date_str = request.GET.get('end_date', '')
-        today = DT.date.today()
-        week_ago = today - DT.timedelta(days=7)
+    submitted_value = request.GET.get('expression', '')
+    start_date_str = request.GET.get('start_date', '')
+    end_date_str = request.GET.get('end_date', '')
 
-        if start_date_str:
-            start_date = DT.datetime.strptime(start_date_str, '%Y-%m-%d').date()
-        else:
-            start_date = week_ago
+    if start_date_str:
+        start_date = DT.datetime.strptime(start_date_str, '%Y-%m-%d').date()
+    else:
+        start_date = week_ago
 
-        if end_date_str:
-            end_date = DT.datetime.strptime(end_date_str, '%Y-%m-%d').date() + DT.timedelta(days=1)
-        else:
-            end_date = today + DT.timedelta(days=1)
+    if end_date_str:
+        end_date = DT.datetime.strptime(end_date_str, '%Y-%m-%d').date() + DT.timedelta(days=1)
+    else:
+        end_date = today + DT.timedelta(days=1)
 
-        plot_div = daily_number_of_articles_graph_per_medium(submitted_value, start_date, end_date)
-        titles = Article.objects.filter(term=submitted_value, pub_date__range=(start_date, end_date))
-        return render(request, 'titles.html', {'titles': titles, 'plot_div': plot_div})
-    return HttpResponse("Form submitted successfully")
+    plot_div = daily_number_of_articles_per_medium_graph(submitted_value, start_date, end_date)
+    titles = Article.objects.filter(term=submitted_value, pub_date__range=(start_date, end_date))
+    return render(request, 'titles.html', {'titles': titles, 'plot_div': plot_div})
 
 
 def list_blog_posts(request):
@@ -43,12 +41,9 @@ def list_blog_posts(request):
 
 
 def index(request):
-    today = DT.date.today()
     end_date = today + DT.timedelta(days=1)
-    week_ago = today - DT.timedelta(days=7)
     blog_posts = Blog_Post.objects.all()
-    websites, terms = load_config()
-    plot_div = daily_number_of_articles_graph_per_medium("Magyar Péter",start_date= week_ago,end_date= end_date)
+    plot_div = daily_number_of_articles_per_medium_graph("Magyar Péter", start_date=week_ago, end_date=end_date)
 
     return render(request, 'index.html', {'blog_posts': blog_posts, 'terms': terms, 'plot_div': plot_div})
 
@@ -57,16 +52,12 @@ def blog_post_detail(request, slug):
     return render(request, 'post_detail.html', {'post': post})
 
 
-#plotly graph
-def graph_view(request):
+def total_nr_titles_per_medium_graph(request):
     blog_posts = Blog_Post.objects.all()
-    websites, terms = load_config()
     if request.method == 'GET':
         submitted_values = request.GET.getlist('expression')  # Get a list of submitted expressions
         start_date_str = request.GET.get('start_date', '')
         end_date_str = request.GET.get('end_date', '')
-        today = DT.date.today()
-        week_ago = today - DT.timedelta(days=7)
 
         if start_date_str:
             start_date = DT.datetime.strptime(start_date_str, '%Y-%m-%d').date()
@@ -80,12 +71,10 @@ def graph_view(request):
 
         if len(submitted_values) > 1:
             all_article_counts = {}
-            websites = set()
 
             for value in submitted_values:
                 articles = Article.objects.filter(term__in=[value], pub_date__range=(start_date, end_date))
-                new_websites = set([article.website for article in articles])
-                websites.update(new_websites)
+                websites = set([article.website for article in articles])
                 article_count_for_term = {}
                 for website in websites:
                     count = articles.filter(website=website).count()
@@ -105,7 +94,18 @@ def graph_view(request):
                 ))
 
             # Here we modify the tickangle of the xaxis, resulting in rotated labels.
-            fig.update_layout(barmode='group', xaxis_tickangle=-45)
+            fig.update_layout(barmode='group', xaxis_tickangle=-45,
+                              xaxis=dict(title='Dátum', tickangle=-90, tickfont=dict(size=10)),
+                              yaxis=dict(title='Cikkek száma'),
+                              autosize=False,
+                              width=800,
+                              height=600,
+                              margin=dict(l=50, r=50, b=100, t=100, pad=4),
+                              plot_bgcolor="#ffffff",
+                              paper_bgcolor="#ffffff",
+                              xaxis_showgrid=True,
+                              yaxis_showgrid=True,
+                              )
 
             # Convert the figure to HTML
             plot_div = plot(fig, output_type='div', include_plotlyjs=False)
@@ -132,7 +132,19 @@ def graph_view(request):
                 name=str(submitted_values),
                 marker_color='indianred'
             ))
-            fig.update_layout(barmode='group', xaxis_tickangle=-45)
+            fig.update_layout(barmode='group', xaxis_tickangle=-45,
+                              xaxis=dict(title='Dátum', tickangle=-90, tickfont=dict(size=10)),
+                              yaxis=dict(title='Cikkek száma'),
+                              autosize=False,
+                              width=800,
+                              height=600,
+                              margin=dict(l=50, r=50, b=100, t=100, pad=4),
+                              plot_bgcolor="#ffffff",
+                              paper_bgcolor="#ffffff",
+                              xaxis_showgrid=True,
+                              yaxis_showgrid=True,
+
+                              )
 
             # Convert the figure to HTML
             plot_div = plot(fig, output_type='div', include_plotlyjs=False)
@@ -148,63 +160,9 @@ def dates_between(start_date, end_date):
     while current_date <= end_date:
         yield current_date
         current_date += delta
-def daily_number_of_articles_graph():
-    today = DT.date.today()
-    week_ago = today - DT.timedelta(days=7)
-    terms = ["Varga Judit", "Magyar Péter"]
-    all_article_counts = []
-    article_count_for_term = {}
-    counter = 0
 
-    days = list(dates_between(week_ago, today))
 
-    for value in terms:
-        articles = Article.objects.filter(term__in=[value], pub_date__range=(week_ago, today))
-        article_counts = [articles.filter(pub_date__date=day).count() for day in days]
-        article_count_for_term[counter] = article_counts
-        all_article_counts.extend(article_counts)
-        counter += 1
-
-    fig = go.Figure(layout_title_text="Kifejezést tartalmazó címek száma újságonként")
-
-    fig.add_trace(go.Scatter(
-        x=days,
-        y=article_count_for_term[0],
-        mode='lines+markers',
-        name=terms[0],
-        line=dict(color='indianred'),
-        marker=dict(color='indianred', size=10)
-    ))
-    fig.add_trace(go.Scatter(
-        x=days,
-        y=article_count_for_term[1],
-        mode='lines+markers',
-        name=terms[1],
-        line=dict(color='lightsalmon'),
-        marker=dict(color='lightsalmon', size=10)
-    ))
-
-    fig.update_layout(
-        xaxis=dict(title='Dátum', tickangle=-90, tickfont=dict(size=10)),
-        yaxis=dict(title='Cikkek száma'),
-        autosize=False,
-        width=800,
-        height=600,
-        margin=dict(l=50, r=50, b=100, t=100, pad=4),
-        plot_bgcolor="#ffffff",
-        paper_bgcolor="#f0f7ff",
-        xaxis_showgrid=True,
-        yaxis_showgrid=True,
-        xaxis_gridcolor='black',
-        yaxis_gridcolor='black',
-    )
-
-    # Convert the figure to HTML
-    plot_div = fig.to_html()
-
-    return plot_div
-
-def daily_number_of_articles_graph_per_medium(term, start_date, end_date):
+def daily_number_of_articles_per_medium_graph(term, start_date, end_date):
     article_count_for_website = {}
     #TODO pass this data in a config file
     website_color_dictionary = {

@@ -41,8 +41,6 @@ def build_link_dictionary(soup,website_URL):
     website_title = soup.find("title")
     try:
         website_links[website_title.string] = get_all_links(soup,website_URL)
-     #   print(website_title.string)
-      #  print(website_links[website_title.string])
     except AttributeError:
         pass
     url_index += 1

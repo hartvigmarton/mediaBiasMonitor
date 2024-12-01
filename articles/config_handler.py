@@ -5,9 +5,9 @@ def load_config():
     try:
         with open('articles/config/config.json', 'r', encoding='utf-8') as config_file:
             config = json.load(config_file)
-            websites = config.get("websites", [])  # ez és a következő sor mehetnek a load_configba
+            websites = config.get("websites", [])
             terms = config.get("terms", [])
-        return websites,terms
+        return websites, terms
     except FileNotFoundError:
         raise Exception("Config file not found")
 

@@ -28,14 +28,14 @@
 
                 <div class="search-field">
                     <h2>Kereső</h2>
-                    <form method="get" action="{% url 'graph_view' %}">
+                    <form method="get" action="{% url 'total_nr_titles_per_medium_graph' %}">
                         <ul class="expression-list">
-                            <select name="expression" id="expression">
+                            <select name="expression" >
                                 {% for term in terms %}
                                     <option value="{{ term }}">{{ term }}</option>
                                 {% endfor %}
                             </select>
-                            <select name="expression" id="expression">
+                            <select name="expression">
                                 <option value="" disabled selected>Második kifejezés (opcionális)</option>
                                 {% for term in terms %}
                                     <option value="{{ term }}">{{ term }}</option>
@@ -57,16 +57,16 @@
                                 {% csrf_token %}
                                         <ul class="expression-list">
 
-                                   <select name="expression" id="expression">
+                                   <select name="expression">
                             {% for term in terms %}
                                 <option value="{{ term }}">{{ term }}</option>
                             {% endfor %}
                         </select>
                                              <label for="start_date">Mikortól:</label>
-                        <input type="date" id="start_date" name="start_date" lang="hu">
+                        <input type="date"  name="start_date" lang="hu">
                         <br>
                         <label for="end_date">Meddig:</label>
-                        <input type="date" id="end_date" name="end_date" lang="hu">
+                        <input type="date"  name="end_date" lang="hu">
 
                                 </ul>
                                 <input type="submit" value="mehet">

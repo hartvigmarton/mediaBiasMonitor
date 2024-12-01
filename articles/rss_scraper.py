@@ -1,10 +1,8 @@
-import json
 from bs4 import BeautifulSoup
 import requests
-from .config_handler import load_config
 
 
-def gather_data(website_name,rss):
+def gather_data(website_name, rss):
     data = {}
     data_list = []
     try:
@@ -12,7 +10,7 @@ def gather_data(website_name,rss):
     except requests.exceptions.ConnectionError:
         print("Connection refused by", website_name)
 
-    soup = BeautifulSoup(url.content,'xml')
+    soup = BeautifulSoup(url.content, 'xml')
     entries = soup.find_all('item')
     for entry in entries:
         article_data = []
@@ -22,14 +20,13 @@ def gather_data(website_name,rss):
         article_data.append(link)
         pub_date = entry.pubDate.text
         article_data.append(pub_date)
-
-        data_list.append(article_data) #make it list with title,link,date
+        data_list.append(article_data)
     data[website_name] = data_list
     return data
 
-def filter_data(website_name,data_dictionary,terms):
-    filtered_data = {}
 
+def filter_data(website_name, data_dictionary, terms):
+    filtered_data = {}
     data_list = []
     term_dict = {}
     for term in terms:
